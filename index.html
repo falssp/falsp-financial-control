@@ -1076,7 +1076,7 @@
             <div class="fg" style="grid-column:1/-1">
               <label>URL do Web App (Apps Script)</label>
               <input type="text" id="cfg-sheets-url"
-                placeholder="https://script.google.com/macros/s/…/exec" value="https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec"
+                placeholder="https://script.google.com/macros/s/…/exec"
                 style="background:var(--in);border:1px solid var(--bd);color:var(--tx);padding:7px 10px;border-radius:7px;font-size:12px;width:100%">
               <span style="font-size:10px;color:var(--mu);margin-top:4px;display:block">
                 Veja o guia abaixo para obter essa URL em ~3 minutos
@@ -2365,7 +2365,7 @@ function showImportPreview(lancRows,comprasNew,conta,perfil,onConfirm){const tot
       </div>
     </div>`;}
 function confirmImportBatch(lancRows,comprasNew,perfil){const enriched=lancRows.map(r=>({...r,perfil,grupo:r.grupo||'',subcat:r.subcat||'',categoria:r.categoria||'',recorrente:false,contrato:r.contrato||'',}));lancs=[...enriched,...lancs];comprasNew.forEach(c=>compras.push(c));save();if(document.getElementById('tbl-body'))renderTable();if(document.getElementById('parc-body'))renderParcelas();if(document.getElementById('k-rec'))renderDash();const area=document.getElementById('import-preview-area');if(area)area.style.display='none';toast(`Importado: ${lancRows.length} lançamento(s)${comprasNew.length ? `+${comprasNew.length}parcelamento(s)` : ''}!`);}
-let profile=JSON.parse(localStorage.getItem('profile')||'{}');let prefs=JSON.parse(localStorage.getItem('prefs')||'{"autosave":"1","cloudTarget":"none"}');if(!prefs.sheetsUrl)prefs.sheetsUrl='https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec';let odToken=null;let odUser=null;let gdToken=null;let gdUser=null;function loadTokens(){const odExp=parseInt(localStorage.getItem('od_token_exp')||'0');if(Date.now()<odExp){odToken=localStorage.getItem('od_token');odUser=JSON.parse(localStorage.getItem('od_user')||'null');}
+let profile=JSON.parse(localStorage.getItem('profile')||'{}');let prefs=JSON.parse(localStorage.getItem('prefs')||'{"autosave":"1","cloudTarget":"none"}');let odToken=null;let odUser=null;let gdToken=null;let gdUser=null;function loadTokens(){const odExp=parseInt(localStorage.getItem('od_token_exp')||'0');if(Date.now()<odExp){odToken=localStorage.getItem('od_token');odUser=JSON.parse(localStorage.getItem('od_user')||'null');}
 else{localStorage.removeItem('od_token');}
 const gdExp=parseInt(localStorage.getItem('gd_token_exp')||'0');if(Date.now()<gdExp){gdToken=localStorage.getItem('gd_token');gdUser=JSON.parse(localStorage.getItem('gd_user')||'null');}
 else{localStorage.removeItem('gd_token');}}
@@ -2827,7 +2827,7 @@ function resp(obj) {
 `;function saveSheetsUrl(){const url=document.getElementById('cfg-sheets-url')?.value.trim();if(!url){toast('Cole a URL do Apps Script primeiro','⚠️');return;}
 prefs.sheetsUrl=url;localStorage.setItem('prefs',JSON.stringify(prefs));toast('URL salva!','✅');}
 function loadSheetsUrl(){const el=document.getElementById('cfg-sheets-url');if(el&&prefs.sheetsUrl)el.value=prefs.sheetsUrl;}
-async function testSheetsConn(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim()||'https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec';const st=document.getElementById('sheets-status');if(!url){toast('Configure a URL primeiro','⚠️');return;}
+async function testSheetsConn(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim();const st=document.getElementById('sheets-status');if(!url){toast('Configure a URL primeiro','⚠️');return;}
 if(st)st.innerHTML='<div style="font-size:12px;color:var(--mu)">⏳ Testando…</div>';try{const res=await fetch(url,{method:'GET'});const data=await res.json();if(data.ok){if(st)st.innerHTML=`<div class="alert ag" style="font-size:12px">✅ Conectado! Script ativo desde ${data.ts||'agora'}</div>`;}else{if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">⚠️ Script respondeu mas com erro: ${data.error||'?'}</div>`;}}catch(e){if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">❌ Erro de conexão: ${e.message}<br><small>Verifique se a URL está correta e o acesso é "Qualquer usuário".</small></div>`;}}
 async function syncToSheets(){
   const url = (prefs.sheetsUrl || document.getElementById('cfg-sheets-url')?.value || '').trim();
@@ -2870,6 +2870,85 @@ async function syncToSheets(){
     toast('Erro ao enviar: ' + err.message, '❌');
   }
 }
-function exportSheetsScript(){const blob=new Blob([SHEETS_SCRIPT.replace(/\`/g,'`').replace(/\\${/g,'${')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='falsp_sheets_sync.gs';a.click();toast('Script exportado! Cole no Apps Script da planilha.','📋');}})();</script>
+function exportSheetsScript(){const blob=new Blob([SHEETS_SCRIPT.replace(/\`/g,'`').replace(/\\${/g,'${')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='falsp_sheets_sync.gs';a.click();toast('Script exportado! Cole no Apps Script da planilha.','📋');}
+// ─── Expor funções globalmente ───────────────────────────────────
+  window.abrirModalPag = abrirModalPag;
+  window.addCartao = addCartao;
+  window.addCartaoDebito = addCartaoDebito;
+  window.addCompra = addCompra;
+  window.addConsumo = addConsumo;
+  window.addConta = addConta;
+  window.addIRManual = addIRManual;
+  window.addInv = addInv;
+  window.addLanc = addLanc;
+  window.cancelImport = cancelImport;
+  window.clearForm = clearForm;
+  window.confirmClearAll = confirmClearAll;
+  window.confirmIRImport = confirmIRImport;
+  window.confirmImport = confirmImport;
+  window.confirmarConciliacao = confirmarConciliacao;
+  window.confirmarPagamento = confirmarPagamento;
+  window.connectGoogleDrive = connectGoogleDrive;
+  window.connectOneDrive = connectOneDrive;
+  window.delCartao = delCartao;
+  window.delCartaoDebito = delCartaoDebito;
+  window.delCompra = delCompra;
+  window.delConsumo = delConsumo;
+  window.delConta = delConta;
+  window.delIRDoc = delIRDoc;
+  window.delIRRec = delIRRec;
+  window.delInv = delInv;
+  window.delLanc = delLanc;
+  window.desfazerPag = desfazerPag;
+  window.disconnectGoogleDrive = disconnectGoogleDrive;
+  window.disconnectOneDrive = disconnectOneDrive;
+  window.exportBackup = exportBackup;
+  window.exportCSV = exportCSV;
+  window.exportIRAll = exportIRAll;
+  window.exportIRCSV = exportIRCSV;
+  window.exportLancsCSV = exportLancsCSV;
+  window.exportSheetsScript = exportSheetsScript;
+  window.exportToXLSX = exportToXLSX;
+  window.handleCartFile = handleCartFile;
+  window.handleCartText = handleCartText;
+  window.handleContaFile = handleContaFile;
+  window.handleContaText = handleContaText;
+  window.handleFile = handleFile;
+  window.handleIRFile = handleIRFile;
+  window.handleIRText = handleIRText;
+  window.handleInvFile = handleInvFile;
+  window.handleInvText = handleInvText;
+  window.importBackup = importBackup;
+  window.lancarAnuidade = lancarAnuidade;
+  window.lancarJurosRotativo = lancarJurosRotativo;
+  window.loadFromGoogleDrive = loadFromGoogleDrive;
+  window.loadFromOneDrive = loadFromOneDrive;
+  window.navTo = navTo;
+  window.onFormaChange = onFormaChange;
+  window.pagarParcela = pagarParcela;
+  window.parsePDF = parsePDF;
+  window.parseTxt = parseTxt;
+  window.registrarQuitacao = registrarQuitacao;
+  window.renderAPagar = renderAPagar;
+  window.renderContas = renderContas;
+  window.renderDash = renderDash;
+  window.renderIRSim = renderIRSim;
+  window.renderIRTable = renderIRTable;
+  window.renderTable = renderTable;
+  window.savePrefs = savePrefs;
+  window.saveProfile = saveProfile;
+  window.saveSheetsUrl = saveSheetsUrl;
+  window.showAddConsumo = showAddConsumo;
+  window.showQuitTab = showQuitTab;
+  window.simularQuitacao = simularQuitacao;
+  window.switchCartaoTab = switchCartaoTab;
+  window.switchIRTab = switchIRTab;
+  window.syncToGoogleDrive = syncToGoogleDrive;
+  window.syncToOneDrive = syncToOneDrive;
+  window.syncToSheets = syncToSheets;
+  window.testSheetsConn = testSheetsConn;
+  window.toggleMEI = toggleMEI;
+  window.updateQuitForm = updateQuitForm;
+})();</script>
 </body>
 </html>
