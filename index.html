@@ -2829,8 +2829,47 @@ prefs.sheetsUrl=url;localStorage.setItem('prefs',JSON.stringify(prefs));toast('U
 function loadSheetsUrl(){const el=document.getElementById('cfg-sheets-url');if(el&&prefs.sheetsUrl)el.value=prefs.sheetsUrl;}
 async function testSheetsConn(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim();const st=document.getElementById('sheets-status');if(!url){toast('Configure a URL primeiro','⚠️');return;}
 if(st)st.innerHTML='<div style="font-size:12px;color:var(--mu)">⏳ Testando…</div>';try{const res=await fetch(url,{method:'GET'});const data=await res.json();if(data.ok){if(st)st.innerHTML=`<div class="alert ag" style="font-size:12px">✅ Conectado! Script ativo desde ${data.ts||'agora'}</div>`;}else{if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">⚠️ Script respondeu mas com erro: ${data.error||'?'}</div>`;}}catch(e){if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">❌ Erro de conexão: ${e.message}<br><small>Verifique se a URL está correta e o acesso é "Qualquer usuário".</small></div>`;}}
-async function syncToSheets(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim();const st=document.getElementById('sheets-status');if(!url){toast('Cole a URL do Apps Script e clique Salvar URL','⚠️');return;}
-if(st)st.innerHTML='<div style="font-size:12px;color:var(--mu)">⏳ Abrindo janela de sync…</div>';const data=JSON.stringify({lancamentos:lancs,cartoes:cartoes,parcelamentos:compras,irRecsV2:irRecsV2,contas_bancarias:contas_bancarias,invs:invs,});const form=document.createElement('form');form.method='POST';form.action=url;form.target='_blank';form.style.display='none';const inp=document.createElement('input');inp.type='hidden';inp.name='postData';inp.value=JSON.stringify({action:'sync',data:JSON.parse(data)});form.appendChild(inp);document.body.appendChild(form);document.body.removeChild(form);try{const xhr=new XMLHttpRequest();xhr.open('POST',url,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onload=function(){try{const result=JSON.parse(xhr.responseText);if(result.ok){const totals=Object.entries(result.synced||{}).map(([k,v])=>k+': '+v).join(' · ');if(st)st.innerHTML='<div class="alert ag" style="font-size:12px">✅ Sheets atualizado! '+totals+'</div>';prefs.sheetsLastSync=new Date().toISOString();localStorage.setItem('prefs',JSON.stringify(prefs));toast('Sheets atualizado!','✅');}else{if(st)st.innerHTML='<div class="alert ay" style="font-size:12px">⚠️ '+(result.error||'Erro')+'</div>';}}catch(e){if(st)st.innerHTML='<div class="alert ag" style="font-size:12px">✅ Enviado! Verifique a planilha.</div>';}};xhr.onerror=function(){window.open(url+'?action=ping','_blank');if(st)st.innerHTML='<div class="alert ay" style="font-size:12px">⚠️ Exportação manual: use o botão abaixo para exportar o JSON e importe na planilha.</div>';};xhr.send(JSON.stringify({action:'sync',data:JSON.parse(data)}));}catch(e){if(st)st.innerHTML='<div class="alert ay" style="font-size:12px">❌ '+e.message+'</div>';}}
+async function syncToSheets(){
+  const url = (prefs.sheetsUrl || document.getElementById('cfg-sheets-url')?.value || '').trim();
+  const st  = document.getElementById('sheets-status');
+  if (!url) { toast('Cole a URL do Apps Script e clique Salvar URL', '⚠️'); return; }
+
+  if (st) st.innerHTML = '<div style="font-size:12px;color:var(--mu)">⏳ Enviando para o Sheets…</div>';
+
+  const payload = JSON.stringify({
+    action: 'sync',
+    data: {
+      lancamentos:      lancs,
+      cartoes:          cartoes,
+      parcelamentos:    compras,
+      irRecsV2:         irRecsV2,
+      contas_bancarias: contas_bancarias,
+      invs:             invs
+    }
+  });
+
+  try {
+    const res = await fetch(url, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    payload
+    });
+    const result = await res.json();
+    if (result.ok) {
+      const totals = Object.entries(result.synced || {})
+        .map(([k, v]) => k + ': ' + v).join(' · ');
+      if (st) st.innerHTML = '<div class="alert ag" style="font-size:12px">✅ Sheets atualizado! ' + totals + '</div>';
+      prefs.sheetsLastSync = new Date().toISOString();
+      localStorage.setItem('prefs', JSON.stringify(prefs));
+      toast('Sheets atualizado!', '✅');
+    } else {
+      if (st) st.innerHTML = '<div class="alert ay" style="font-size:12px">⚠️ ' + (result.error || JSON.stringify(result)) + '</div>';
+    }
+  } catch (err) {
+    if (st) st.innerHTML = '<div class="alert ar" style="font-size:12px">❌ Erro: ' + err.message + '<br><small>Verifique se a URL está correta e o acesso é "Qualquer usuário".</small></div>';
+    toast('Erro ao enviar: ' + err.message, '❌');
+  }
+}
 function exportSheetsScript(){const blob=new Blob([SHEETS_SCRIPT.replace(/\`/g,'`').replace(/\\${/g,'${')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='falsp_sheets_sync.gs';a.click();toast('Script exportado! Cole no Apps Script da planilha.','📋');}})();</script>
 </body>
 </html>
