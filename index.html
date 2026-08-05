@@ -1077,7 +1077,6 @@
               <label>URL do Web App (Apps Script)</label>
               <input type="text" id="cfg-sheets-url"
                 placeholder="https://script.google.com/macros/s/…/exec"
-                value="https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec"
                 style="background:var(--in);border:1px solid var(--bd);color:var(--tx);padding:7px 10px;border-radius:7px;font-size:12px;width:100%">
               <span style="font-size:10px;color:var(--mu);margin-top:4px;display:block">
                 Veja o guia abaixo para obter essa URL em ~3 minutos
@@ -1091,7 +1090,7 @@
             <button class="btn btng" onclick="testSheetsConn()" style="font-size:12px">
               🔗 Testar conexão
             </button>
-            <button class="btn" onclick="saveSheetsUrl()" style="font-size:12px;background:var(--s2);color:var(--tx);border:1px solid var(--bd)">
+            <button class="btn" onclick="saveSheetsUrl()" style="font-size:12px;background:var(--s2)">
               💾 Salvar URL
             </button>
           </div>
@@ -1112,7 +1111,7 @@
             </div>
           </details>
           <div style="margin-top:12px">
-            <button class="btn" onclick="exportSheetsScript()" style="font-size:11px;background:var(--s2);color:var(--tx);border:1px solid var(--bd)">
+            <button class="btn" onclick="exportSheetsScript()" style="font-size:11px;background:var(--s2)">
               📋 Exportar script (.gs) para copiar
             </button>
           </div>
@@ -1353,7 +1352,7 @@ tb.innerHTML=data.map(l=>`<tr>
 function exportCSV(){if(!lancs.length){toast('Sem dados','⚠️');return;}
 const rows=[['Data','Perfil','Descrição','Grupo','Sub-categoria','Tipo','Valor','Forma','Conta','Contrato/Ref','Recorrente','Obs']];lancs.forEach(l=>rows.push([l.data,l.perfil,l.descricao,l.grupo,l.subcat,l.tipo,l.valor,l.forma,l.conta,l.contrato||'',l.recorrente?'Sim':'',l.obs]));const csv=rows.map(r=>r.map(v=>`"${(v||''). toString().replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='lancamentos_'+new Date().toISOString().slice(0,10)+'.csv';a.click();toast('CSV exportado!');}
 function addCartao(){const c={id:Date.now(),nome:document.getElementById('c-nome').value.trim(),perfil:document.getElementById('c-perfil')?.value||'PF',banco:document.getElementById('c-banco').value,bandeira:document.getElementById('c-band').value,limite:parseFloat(document.getElementById('c-lim').value)||0,digits:document.getElementById('c-digits')?.value.trim()||'',venc:document.getElementById('c-venc').value,fech:document.getElementById('c-fech').value,anuidade:parseFloat(document.getElementById('c-anuidade')?.value)||0,anuidData:document.getElementById('c-anuid-data')?.value||'',jurosRotativo:parseFloat(document.getElementById('c-juros')?.value)||0,saldoRotativo:{},cnpj:document.getElementById('c-cnpj').value.trim()};if(!c.nome||!c.limite){toast('Preencha nome e limite','⚠️');return;}
-cartoes.push(c);save();renderCartoes();toast('Cartão adicionado!');}
+cartoes.push(c);save();renderCartoes();toast('Cartão adicionado!'); ['c-nome','c-perfil','c-band','c-lim','c-banco','c-digits','c-venc','c-fech','c-anuidade','c-anuid-data','c-juros','c-cnpj'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';}); }
 function delCartao(id){cartoes=cartoes.filter(c=>c.id!==id);save();renderCartoes();toast('Removido','🗑');}
 function switchCartaoTab(p){cartaoTab=p;renderCartoes();}
 function renderCartoes(){if(!document.getElementById('cart-body'))return;document.querySelectorAll('.tab').forEach((t,i)=>{if(document.getElementById('page-cartoes').contains(t))t.classList.toggle('active',['PF','PJ'][i]===cartaoTab);});document.getElementById('cart-tab-label').textContent=`Cartões ${cartaoTab}`;const list=cartoes.filter(c=>c.perfil===cartaoTab);const tb=document.getElementById('cart-body');if(!list.length){tb.innerHTML=`<tr><td colspan="11"><div class="empty"><div class="empty-i">💳</div>Nenhum cartão ${cartaoTab}</div></td></tr>`;return;}
@@ -1398,7 +1397,7 @@ tb.innerHTML=list.map(c=>{const mesAtual=new Date().toISOString().slice(0,7);con
       </td>
     </tr>`;}).join('');}
 function addCompra(){const juros=parseFloat(document.getElementById('p-juros').value)||0;const c={id:Date.now(),descricao:document.getElementById('p-desc').value.trim(),valorTotal:parseFloat(document.getElementById('p-total').value)||0,nParcelas:parseInt(document.getElementById('p-nparc').value)||1,dataCompra:document.getElementById('p-data').value,cartao:document.getElementById('p-cartao').value.trim(),perfil:document.getElementById('p-perfil').value||'PF',categoria:document.getElementById('p-cat').value,juros,pagas:[],};if(!c.descricao||!c.valorTotal||!c.dataCompra){toast('Preencha descrição, valor e data','⚠️');return;}
-compras.push(c);save();renderParcelas();toast('Compra registrada!');}
+compras.push(c);save();renderParcelas();toast('Compra registrada!'); ['p-desc','p-total','p-nparc','p-data','p-cartao','p-perfil','p-cat','p-juros'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
 function delCompra(id){compras=compras.filter(c=>c.id!==id);save();renderParcelas();toast('Removido','🗑');}
 function pagarParcela(compraId,parcelaNum){const c=compras.find(x=>x.id===compraId);if(!c)return;if(!c.pagas)c.pagas=[];if(c.pagas.includes(parcelaNum)){c.pagas=c.pagas.filter(n=>n!==parcelaNum);}
 else{c.pagas.push(parcelaNum);}
@@ -1447,7 +1446,7 @@ const totalAberto=compras.reduce((s,c)=>{const ps=createParcelas(c);const ab=ps.
     <td><button class="btn btng" style="font-size:10px;padding:3px 8px" onclick="pagarParcela(${p.compraId},${p.parcelaNum})">✅ Pagar</button></td>
   </tr>`).join(''):'<tr><td colspan="7"><div class="empty" style="padding:16px"><div class="empty-i">✅</div>Sem parcelas próximas</div></td></tr>';}
 function addInv(){const i={id:Date.now(),nome:document.getElementById('i-nome').value.trim(),tipo:document.getElementById('i-tipo').value,perfil:document.getElementById('i-perfil').value,inst:document.getElementById('i-inst').value.trim(),aplicado:parseFloat(document.getElementById('i-ap').value)||0,rend:parseFloat(document.getElementById('i-rend').value)||0,venc:document.getElementById('i-venc').value,irCat:document.getElementById('i-ir').value};if(!i.nome||!i.aplicado){toast('Preencha nome e valor','⚠️');return;}
-invs.push(i);save();renderInvs();toast('Ativo adicionado!');}
+invs.push(i);save();renderInvs();toast('Ativo adicionado!'); ['i-nome','i-tipo','i-perfil','i-inst','i-ap','i-rend','i-venc','i-ir'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
 function delInv(id){invs=invs.filter(i=>i.id!==id);save();renderInvs();toast('Removido','🗑');}
 function renderInvs(){if(!document.getElementById('inv-body'))return;const tb=document.getElementById('inv-body');const tot=invs.reduce((s,i)=>s+i.aplicado+i.rend,0);document.getElementById('inv-total').textContent='Total carteira: '+BRL(tot);if(!invs.length){tb.innerHTML='<tr><td colspan="11"><div class="empty"><div class="empty-i">📈</div>Sem ativos</div></td></tr>';return;}
 tb.innerHTML=invs.map(i=>{const atual=i.aplicado+i.rend;const ret=i.aplicado>0?i.rend/i.aplicado:0;const irMeta=IR_CATS.find(c=>c.id===i.irCat);return`<tr>
@@ -2126,7 +2125,7 @@ function addConta() {
   saveContas();
   renderContas();
   updateContaSelects();
-  toast('Conta adicionada!');
+  toast('Conta adicionada!'); ['cc-banco','cc-nome','cc-tipo','cc-perfil','cc-agencia','cc-conta','cc-saldo','cc-saldo-data','cc-contrato','cc-pix','cc-obs'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});
   // Clear form
   ['cc-banco','cc-nome','cc-tipo','cc-perfil','cc-agencia','cc-conta',
    'cc-saldo','cc-saldo-data','cc-contrato','cc-pix','cc-obs'].forEach(id => {
@@ -2825,33 +2824,40 @@ function resp(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
-`;
-
-
-
-function exportSheetsScript(){const blob=new Blob([SHEETS_SCRIPT.replace(/\`/g,'`').replace(/\\${/g,'${')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='falsp_sheets_sync.gs';a.click();toast('Script exportado! Cole no Apps Script da planilha.','📋');}})();
-
-// ─── Funções globais de sync ───────────────────────────────────
-function saveSheetsUrl(){const url=document.getElementById('cfg-sheets-url')?.value.trim();if(!url){toast('Cole a URL do Apps Script primeiro','⚠️');return;}
+`;function saveSheetsUrl(){const url=document.getElementById('cfg-sheets-url')?.value.trim();if(!url){toast('Cole a URL do Apps Script primeiro','⚠️');return;}
 prefs.sheetsUrl=url;localStorage.setItem('prefs',JSON.stringify(prefs));toast('URL salva!','✅');}
-
 function loadSheetsUrl(){const el=document.getElementById('cfg-sheets-url');if(el&&prefs.sheetsUrl)el.value=prefs.sheetsUrl;}
-
-async function testSheetsConn(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim()||'https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec';const st=document.getElementById('sheets-status');if(!url){toast('Configure a URL primeiro','⚠️');return;}
+async function testSheetsConn(){const url=prefs.sheetsUrl||document.getElementById('cfg-sheets-url')?.value.trim();const st=document.getElementById('sheets-status');if(!url){toast('Configure a URL primeiro','⚠️');return;}
 if(st)st.innerHTML='<div style="font-size:12px;color:var(--mu)">⏳ Testando…</div>';try{const res=await fetch(url,{method:'GET'});const data=await res.json();if(data.ok){if(st)st.innerHTML=`<div class="alert ag" style="font-size:12px">✅ Conectado! Script ativo desde ${data.ts||'agora'}</div>`;}else{if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">⚠️ Script respondeu mas com erro: ${data.error||'?'}</div>`;}}catch(e){if(st)st.innerHTML=`<div class="alert ay" style="font-size:12px">❌ Erro de conexão: ${e.message}<br><small>Verifique se a URL está correta e o acesso é "Qualquer usuário".</small></div>`;}}
-
 async function syncToSheets(){
-  const url = (document.getElementById('cfg-sheets-url')?.value?.trim()) || prefs.sheetsUrl || 'https://script.google.com/macros/s/AKfycbyMyyu25nl0AeKa6QFFWCiSveclYWjipJsx-in55hBJuEUWyNORGjmQDH8bDWARsGDv/exec';
+  const url = (prefs.sheetsUrl || document.getElementById('cfg-sheets-url')?.value || '').trim();
   const st  = document.getElementById('sheets-status');
   if (!url) { toast('Cole a URL do Apps Script e clique Salvar URL', '⚠️'); return; }
-  if (url !== prefs.sheetsUrl) { prefs.sheetsUrl = url; localStorage.setItem('prefs', JSON.stringify(prefs)); }
+
   if (st) st.innerHTML = '<div style="font-size:12px;color:var(--mu)">⏳ Enviando para o Sheets…</div>';
-  const payload = JSON.stringify({ action: 'sync', data: { lancamentos: lancs, cartoes, parcelamentos: compras, irRecsV2, contas_bancarias, invs } });
+
+  const payload = JSON.stringify({
+    action: 'sync',
+    data: {
+      lancamentos:      lancs,
+      cartoes:          cartoes,
+      parcelamentos:    compras,
+      irRecsV2:         irRecsV2,
+      contas_bancarias: contas_bancarias,
+      invs:             invs
+    }
+  });
+
   try {
-    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: payload });
+    const res = await fetch(url, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    payload
+    });
     const result = await res.json();
     if (result.ok) {
-      const totals = Object.entries(result.synced || {}).map(([k,v]) => k+': '+v).join(' · ');
+      const totals = Object.entries(result.synced || {})
+        .map(([k, v]) => k + ': ' + v).join(' · ');
       if (st) st.innerHTML = '<div class="alert ag" style="font-size:12px">✅ Sheets atualizado! ' + totals + '</div>';
       prefs.sheetsLastSync = new Date().toISOString();
       localStorage.setItem('prefs', JSON.stringify(prefs));
@@ -2860,9 +2866,10 @@ async function syncToSheets(){
       if (st) st.innerHTML = '<div class="alert ay" style="font-size:12px">⚠️ ' + (result.error || JSON.stringify(result)) + '</div>';
     }
   } catch (err) {
-    if (st) st.innerHTML = '<div class="alert ar" style="font-size:12px">❌ ' + err.message + '</div>';
-    toast('Erro: ' + err.message, '❌');
+    if (st) st.innerHTML = '<div class="alert ar" style="font-size:12px">❌ Erro: ' + err.message + '<br><small>Verifique se a URL está correta e o acesso é "Qualquer usuário".</small></div>';
+    toast('Erro ao enviar: ' + err.message, '❌');
   }
-}</script>
+}
+function exportSheetsScript(){const blob=new Blob([SHEETS_SCRIPT.replace(/\`/g,'`').replace(/\\${/g,'${')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='falsp_sheets_sync.gs';a.click();toast('Script exportado! Cole no Apps Script da planilha.','📋');}})();</script>
 </body>
 </html>
