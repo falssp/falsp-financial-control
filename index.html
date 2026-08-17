@@ -245,6 +245,12 @@
           <input type="text" id="cc-obs" placeholder="Ex: conta principal, débito automático Vivo…">
         </div>
       </div>
+      <div class="fp c4" style="margin-top:12px">
+        <div class="fg"><label>Conta principal</label><select id="cc-principal"><option value="0">Não</option><option value="1">Sim — destacar no dashboard</option></select></div>
+        <div class="fg"><label>Tags</label><input type="text" id="cc-tags" placeholder="salário, reserva… (vírgula)"></div>
+        <div class="fg"><label>Notas internas</label><input type="text" id="cc-notas" placeholder="Observações livres"></div>
+        <div class="fg"><label>Encerrada em</label><input type="date" id="cc-encerrada"></div>
+      </div>
       <div class="fa" style="margin-top:12px">
         <button class="btn btnp" onclick="addConta()">+ Adicionar Conta</button>
       </div>
@@ -400,6 +406,12 @@
           <span style="font-size:10px;color:var(--mu);margin-top:3px">Incide sobre saldo não pago</span>
         </div>
         <div class="fg"><label>CNPJ (se PJ)</label><input type="text" id="c-cnpj" placeholder="00.000.000/0001-00"></div>
+      </div>
+      <div class="fp c4">
+        <div class="fg"><label>Cartão substitui</label><input type="text" id="c-substitui" placeholder="Nome do cartão anterior (opcional)"></div>
+        <div class="fg"><label>Tags</label><input type="text" id="c-tags" placeholder="viagem, cashback… (separar por vírgula)"></div>
+        <div class="fg"><label>Notas internas</label><input type="text" id="c-notas" placeholder="Observações livres"></div>
+        <div class="fg"><label>Encerrado em</label><input type="date" id="c-encerrado"></div>
       </div>
       <div class="fa"><button class="btn btnp" onclick="addCartao()">+ Adicionar</button></div>
     </div>
@@ -604,6 +616,12 @@
           <option value="ir_capital">Ganho de Capital</option>
           <option value="ir_receita">Rendimento Tributável</option>
         </select></div>
+      </div>
+      <div class="fp c4">
+        <div class="fg"><label>Status</label><select id="i-status"><option value="ativo">Ativo</option><option value="resgatado">Resgatado</option><option value="vencido">Vencido</option></select></div>
+        <div class="fg"><label>Resgate planejado</label><input type="date" id="i-resgate"></div>
+        <div class="fg"><label>Tags</label><input type="text" id="i-tags" placeholder="longo prazo, aposentadoria…"></div>
+        <div class="fg"><label>Notas internas</label><input type="text" id="i-notas" placeholder="Observações livres"></div>
       </div>
       <div class="fa"><button class="btn btnp" onclick="addInv()">+ Adicionar</button></div>
     </div>
@@ -1351,11 +1369,14 @@ tb.innerHTML=data.map(l=>`<tr>
   </tr>`).join('');}
 function exportCSV(){if(!lancs.length){toast('Sem dados','⚠️');return;}
 const rows=[['Data','Perfil','Descrição','Grupo','Sub-categoria','Tipo','Valor','Forma','Conta','Contrato/Ref','Recorrente','Obs']];lancs.forEach(l=>rows.push([l.data,l.perfil,l.descricao,l.grupo,l.subcat,l.tipo,l.valor,l.forma,l.conta,l.contrato||'',l.recorrente?'Sim':'',l.obs]));const csv=rows.map(r=>r.map(v=>`"${(v||''). toString().replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='lancamentos_'+new Date().toISOString().slice(0,10)+'.csv';a.click();toast('CSV exportado!');}
-function addCartao(){const c={id:Date.now(),nome:document.getElementById('c-nome').value.trim(),perfil:document.getElementById('c-perfil')?.value||'PF',banco:document.getElementById('c-banco').value,bandeira:document.getElementById('c-band').value,limite:parseFloat(document.getElementById('c-lim').value)||0,digits:document.getElementById('c-digits')?.value.trim()||'',venc:document.getElementById('c-venc').value,fech:document.getElementById('c-fech').value,anuidade:parseFloat(document.getElementById('c-anuidade')?.value)||0,anuidData:document.getElementById('c-anuid-data')?.value||'',jurosRotativo:parseFloat(document.getElementById('c-juros')?.value)||0,saldoRotativo:{},cnpj:document.getElementById('c-cnpj').value.trim()};if(!c.nome||!c.limite){toast('Preencha nome e limite','⚠️');return;}
-cartoes.push(c);save();renderCartoes();toast('Cartão adicionado!'); ['c-nome','c-perfil','c-band','c-lim','c-banco','c-digits','c-venc','c-fech','c-anuidade','c-anuid-data','c-juros','c-cnpj'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';}); }
+function addCartao(){const c={id:Date.now(),nome:document.getElementById('c-nome').value.trim(),perfil:document.getElementById('c-perfil')?.value||'PF',banco:document.getElementById('c-banco').value,bandeira:document.getElementById('c-band').value,limite:parseFloat(document.getElementById('c-lim').value)||0,digits:document.getElementById('c-digits')?.value.trim()||'',venc:document.getElementById('c-venc').value,fech:document.getElementById('c-fech').value,anuidade:parseFloat(document.getElementById('c-anuidade')?.value)||0,anuidData:document.getElementById('c-anuid-data')?.value||'',jurosRotativo:parseFloat(document.getElementById('c-juros')?.value)||0,saldoRotativo:{},cnpj:document.getElementById('c-cnpj').value.trim(),substitui:document.getElementById('c-substitui')?.value.trim()||'',tags:(document.getElementById('c-tags')?.value||'').split(',').map(t=>t.trim()).filter(Boolean),notas:document.getElementById('c-notas')?.value.trim()||'',encerrado:document.getElementById('c-encerrado')?.value||'',encerradoMotivo:''};if(!c.nome||!c.limite){toast('Preencha nome e limite','⚠️');return;}
+cartoes.push(c);save();renderCartoes();toast('Cartão adicionado!');
+['c-nome','c-lim','c-digits','c-venc','c-fech','c-anuidade','c-anuid-data','c-juros','c-cnpj','c-substitui','c-tags','c-notas','c-encerrado'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+document.getElementById('c-band').selectedIndex=0;document.getElementById('c-banco').selectedIndex=0;}
 function delCartao(id){cartoes=cartoes.filter(c=>c.id!==id);save();renderCartoes();toast('Removido','🗑');}
 function switchCartaoTab(p){cartaoTab=p;renderCartoes();}
-function renderCartoes(){if(!document.getElementById('cart-body'))return;document.querySelectorAll('.tab').forEach((t,i)=>{if(document.getElementById('page-cartoes').contains(t))t.classList.toggle('active',['PF','PJ'][i]===cartaoTab);});document.getElementById('cart-tab-label').textContent=`Cartões ${cartaoTab}`;const list=cartoes.filter(c=>c.perfil===cartaoTab);const tb=document.getElementById('cart-body');if(!list.length){tb.innerHTML=`<tr><td colspan="11"><div class="empty"><div class="empty-i">💳</div>Nenhum cartão ${cartaoTab}</div></td></tr>`;return;}
+function renderCartoes(){if(!document.getElementById('cart-body'))return;document.querySelectorAll('.tab').forEach((t,i)=>{if(document.getElementById('page-cartoes').contains(t))t.classList.toggle('active',['PF','PJ'][i]===cartaoTab);});document.getElementById('cart-tab-label').textContent=`Cartões ${cartaoTab}`;const mostrarEnc=document.getElementById('cart-show-enc')?.checked;
+const list=cartoes.filter(c=>c.perfil===cartaoTab&&(mostrarEnc||!c.encerrado));const tb=document.getElementById('cart-body');if(!list.length){tb.innerHTML=`<tr><td colspan="11"><div class="empty"><div class="empty-i">💳</div>Nenhum cartão ${cartaoTab}</div></td></tr>`;return;}
 tb.innerHTML=list.map(c=>{const mesAtual=new Date().toISOString().slice(0,7);const rotativo=(c.saldoRotativo||{})[mesAtual]||0;const hoje=new Date().toISOString().slice(0,10);const diaFech=parseInt(c.fech)||1;const now=new Date();const cycleStart=new Date(now.getFullYear(),now.getMonth(),diaFech);if(cycleStart>now)cycleStart.setMonth(cycleStart.getMonth()-1);const cycleStartISO=cycleStart.toISOString().slice(0,10);const fatAtual=lancs.filter(l=>l.tipo==='Despesa'&&l.conta===c.nome&&(l.forma==='Cartão Crédito'||l.forma==='Crédito')&&l.data>=cycleStartISO&&l.data<=hoje).reduce((s,l)=>s+l.valor,0);const totalComprometido=fatAtual+rotativo;const disp=Math.max(0,c.limite-totalComprometido);const pct=c.limite>0?Math.min(totalComprometido/c.limite,1):0;const cor=pct>.8?'var(--rd)':pct>.5?'var(--yw)':'var(--gn)';const maskedNum=c.digits?`•••• •••• •••• ${c.digits}`:'•••• •••• •••• ••••';const anuidAlert=c.anuidade&&c.anuidData&&c.anuidData<=new Date(Date.now()+30*86400000).toISOString().slice(0,10)?`<span title="Anuidade R$ ${c.anuidade.toFixed(2)} vence em ${fDate(c.anuidData)}" style="color:var(--yw);cursor:help">⚠️</span>`:'';const rotAlert=rotativo>0?`<div style="font-size:10px;color:var(--rd);margin-top:2px">⚠️ Rotativo: ${BRL(rotativo)}</div>`:'';const jurosAlert=rotativo>0&&c.jurosRotativo?`<div style="font-size:10px;color:var(--rd)">Juros est.: ${BRL(rotativo * c.jurosRotativo/100)}/mês</div>`:'';return`<tr>
       <td>
         <div style="font-weight:600">${c.nome} ${anuidAlert}</div>
@@ -1397,7 +1418,7 @@ tb.innerHTML=list.map(c=>{const mesAtual=new Date().toISOString().slice(0,7);con
       </td>
     </tr>`;}).join('');}
 function addCompra(){const juros=parseFloat(document.getElementById('p-juros').value)||0;const c={id:Date.now(),descricao:document.getElementById('p-desc').value.trim(),valorTotal:parseFloat(document.getElementById('p-total').value)||0,nParcelas:parseInt(document.getElementById('p-nparc').value)||1,dataCompra:document.getElementById('p-data').value,cartao:document.getElementById('p-cartao').value.trim(),perfil:document.getElementById('p-perfil').value||'PF',categoria:document.getElementById('p-cat').value,juros,pagas:[],};if(!c.descricao||!c.valorTotal||!c.dataCompra){toast('Preencha descrição, valor e data','⚠️');return;}
-compras.push(c);save();renderParcelas();toast('Compra registrada!'); ['p-desc','p-total','p-nparc','p-data','p-cartao','p-perfil','p-cat','p-juros'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
+compras.push(c);save();renderParcelas();toast('Compra registrada!');}
 function delCompra(id){compras=compras.filter(c=>c.id!==id);save();renderParcelas();toast('Removido','🗑');}
 function pagarParcela(compraId,parcelaNum){const c=compras.find(x=>x.id===compraId);if(!c)return;if(!c.pagas)c.pagas=[];if(c.pagas.includes(parcelaNum)){c.pagas=c.pagas.filter(n=>n!==parcelaNum);}
 else{c.pagas.push(parcelaNum);}
@@ -1445,11 +1466,19 @@ const totalAberto=compras.reduce((s,c)=>{const ps=createParcelas(c);const ab=ps.
     <td><span class="badge by">Em aberto</span></td>
     <td><button class="btn btng" style="font-size:10px;padding:3px 8px" onclick="pagarParcela(${p.compraId},${p.parcelaNum})">✅ Pagar</button></td>
   </tr>`).join(''):'<tr><td colspan="7"><div class="empty" style="padding:16px"><div class="empty-i">✅</div>Sem parcelas próximas</div></td></tr>';}
-function addInv(){const i={id:Date.now(),nome:document.getElementById('i-nome').value.trim(),tipo:document.getElementById('i-tipo').value,perfil:document.getElementById('i-perfil').value,inst:document.getElementById('i-inst').value.trim(),aplicado:parseFloat(document.getElementById('i-ap').value)||0,rend:parseFloat(document.getElementById('i-rend').value)||0,venc:document.getElementById('i-venc').value,irCat:document.getElementById('i-ir').value};if(!i.nome||!i.aplicado){toast('Preencha nome e valor','⚠️');return;}
-invs.push(i);save();renderInvs();toast('Ativo adicionado!'); ['i-nome','i-tipo','i-perfil','i-inst','i-ap','i-rend','i-venc','i-ir'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
+function addInv(){const i={id:Date.now(),nome:document.getElementById('i-nome').value.trim(),tipo:document.getElementById('i-tipo').value,perfil:document.getElementById('i-perfil').value,inst:document.getElementById('i-inst').value.trim(),aplicado:parseFloat(document.getElementById('i-ap').value)||0,rend:parseFloat(document.getElementById('i-rend').value)||0,venc:document.getElementById('i-venc').value,irCat:document.getElementById('i-ir').value,status:document.getElementById('i-status')?.value||'ativo',resgate:document.getElementById('i-resgate')?.value||'',tags:(document.getElementById('i-tags')?.value||'').split(',').map(t=>t.trim()).filter(Boolean),notas:document.getElementById('i-notas')?.value.trim()||''};if(!i.nome||!i.aplicado){toast('Preencha nome e valor','⚠️');return;}
+invs.push(i);save();renderInvs();toast('Ativo adicionado!');
+['i-nome','i-inst','i-ap','i-rend','i-venc','i-resgate','i-tags','i-notas'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+['i-tipo','i-perfil','i-ir','i-status'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});}
 function delInv(id){invs=invs.filter(i=>i.id!==id);save();renderInvs();toast('Removido','🗑');}
-function renderInvs(){if(!document.getElementById('inv-body'))return;const tb=document.getElementById('inv-body');const tot=invs.reduce((s,i)=>s+i.aplicado+i.rend,0);document.getElementById('inv-total').textContent='Total carteira: '+BRL(tot);if(!invs.length){tb.innerHTML='<tr><td colspan="11"><div class="empty"><div class="empty-i">📈</div>Sem ativos</div></td></tr>';return;}
-tb.innerHTML=invs.map(i=>{const atual=i.aplicado+i.rend;const ret=i.aplicado>0?i.rend/i.aplicado:0;const irMeta=IR_CATS.find(c=>c.id===i.irCat);return`<tr>
+function renderInvs(){if(!document.getElementById('inv-body'))return;const tb=document.getElementById('inv-body');const mostrarEncI=document.getElementById('inv-show-enc')?.checked;
+const invsFilt=invs.filter(i=>mostrarEncI||(i.status||'ativo')==='ativo');
+const tot=invsFilt.reduce((s,i)=>s+i.aplicado+i.rend,0);
+const totAplicado=invsFilt.reduce((s,i)=>s+i.aplicado,0);
+const totRend=invsFilt.reduce((s,i)=>s+i.rend,0);
+const rentPct=totAplicado>0?((totRend/totAplicado)*100).toFixed(2)+'%':'—';
+document.getElementById('inv-total').textContent='Carteira ativa: '+BRL(tot)+' · Rentab.: '+rentPct;if(!invs.length){tb.innerHTML='<tr><td colspan="11"><div class="empty"><div class="empty-i">📈</div>Sem ativos</div></td></tr>';return;}
+tb.innerHTML=invsFilt.map(i=>{const atual=i.aplicado+i.rend;const ret=i.aplicado>0?i.rend/i.aplicado:0;const irMeta=IR_CATS.find(c=>c.id===i.irCat);return`<tr>
       <td style="font-weight:500">${i.nome}</td><td><span class="badge bk">${i.tipo}</span></td>
       <td><span class="pill pill-${i.perfil.toLowerCase()}">${i.perfil}</span></td>
       <td class="mono">${BRL(i.aplicado)}</td>
@@ -1458,8 +1487,13 @@ tb.innerHTML=invs.map(i=>{const atual=i.aplicado+i.rend;const ret=i.aplicado>0?i
       <td class="mono ${ret>=0?'cg':'cr'}">${(ret*100).toFixed(2)}%</td>
       <td style="font-size:11px">${irMeta?irMeta.icon+' '+irMeta.label:'—'}</td>
       <td>${i.inst||'—'}</td>
-      <td style="font-size:11px;color:var(--mu)">${i.venc?fDate(i.venc):'—'}</td>
-      <td><button class="del" onclick="delInv(${i.id})">✕</button></td>
+      <td style="font-size:11px;color:var(--mu)">${i.venc?fDate(i.venc):'—'} ${i.venc&&(i.status||'ativo')==='ativo'&&Math.ceil((new Date(i.venc)-new Date())/(864e5))<=30?`<span class='badge by' style='font-size:9px'>⚠️ ${Math.ceil((new Date(i.venc)-new Date())/(864e5))}d</span>`:''}</td>
+      <td>
+        <button class="del" onclick="delInv(${i.id})">✕</button>
+        ${(i.status||'ativo')==='ativo'?`<button class="btn btng"style="font-size:10px;padding:2px 6px;margin-top:2px"onclick="encerrarItem('inv',${i.id})">🔴 Resgatar</button>`:`<button class="btn btng"style="font-size:10px;padding:2px 6px;margin-top:2px"onclick="reativarItem('inv',${i.id})">🟢 Reativar</button>`}
+        ${i.tags?.length?`<div style="font-size:9px;color:var(--mu);margin-top:2px">🏷 ${i.tags.join(', ')}</div>`:''}
+        ${i.notas?`<div style="font-size:9px;color:var(--mu);margin-top:1px" title="${i.notas}">📝 ${i.notas}</div>`:''}
+      </td>
     </tr>`;}).join('');}
 let irDocs=JSON.parse(localStorage.getItem('irdocs')||'[]');let irRecsV2=JSON.parse(localStorage.getItem('irrecsv2')||'[]');let irTab='pf';function saveIR(){localStorage.setItem('irdocs',JSON.stringify(irDocs));localStorage.setItem('irrecsv2',JSON.stringify(irRecsV2));}
 function switchIRTab(tab){irTab=tab;document.querySelectorAll('.ir-tc').forEach(el=>el.style.display='none');document.querySelectorAll('#ir-tabs .tab').forEach(t=>t.classList.remove('active'));document.getElementById('irtc-'+tab).style.display='block';const tabs=['pf','pj','sim','docs'];document.querySelectorAll('#ir-tabs .tab')[tabs.indexOf(tab)]?.classList.add('active');if(tab==='pf'||tab==='pj')renderIRTable(tab);if(tab==='sim')renderIRSim();if(tab==='docs')renderIRDocs();renderIRKPIs();}
@@ -2120,15 +2154,20 @@ function addConta() {
     contrato:   document.getElementById('cc-contrato')?.value.trim() || '',
     pix:        document.getElementById('cc-pix')?.value.trim() || '',
     obs:        document.getElementById('cc-obs')?.value.trim() || '',
+    principal:  document.getElementById('cc-principal')?.value === '1',
+    tags:       (document.getElementById('cc-tags')?.value||'').split(',').map(t=>t.trim()).filter(Boolean),
+    notas:      document.getElementById('cc-notas')?.value.trim() || '',
+    encerrada:  document.getElementById('cc-encerrada')?.value || '',
   };
   contas_bancarias.push(c);
   saveContas();
   renderContas();
   updateContaSelects();
-  toast('Conta adicionada!'); ['cc-banco','cc-nome','cc-tipo','cc-perfil','cc-agencia','cc-conta','cc-saldo','cc-saldo-data','cc-contrato','cc-pix','cc-obs'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});
+  toast('Conta adicionada!');
   // Clear form
   ['cc-banco','cc-nome','cc-tipo','cc-perfil','cc-agencia','cc-conta',
-   'cc-saldo','cc-saldo-data','cc-contrato','cc-pix','cc-obs'].forEach(id => {
+   'cc-saldo','cc-saldo-data','cc-contrato','cc-pix','cc-obs',
+   'cc-principal','cc-tags','cc-notas','cc-encerrada'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.tagName === 'SELECT' ? el.selectedIndex = 0 : el.value = '';
@@ -2165,7 +2204,9 @@ function calcSaldoConta(conta) {
 function renderContas() {
   if (!document.getElementById('cc-body')) return;
   const filtPerfil = document.getElementById('cc-filtro-perfil')?.value || '';
-  const data = contas_bancarias.filter(c => !filtPerfil || c.perfil === filtPerfil);
+  const mostrarEncC = document.getElementById('cc-show-enc')?.checked;
+  const data = contas_bancarias.filter(c =>
+    (!filtPerfil || c.perfil === filtPerfil) && (mostrarEncC || !c.encerrada));
 
   document.getElementById('cc-count').textContent = data.length + ' conta(s)';
 
@@ -2445,7 +2486,64 @@ if(prefs.dateFmt){const el=document.getElementById('cfg-date-fmt');if(el)el.valu
 if(prefs.fiscalStart){const el=document.getElementById('cfg-fiscal-start');if(el)el.value=prefs.fiscalStart||'01';}
 if(prefs.cloudTarget){const el=document.getElementById('cfg-cloud-target');if(el)el.value=prefs.cloudTarget;}
 if(prefs.gdClientId){const el=document.getElementById('cfg-gd-client');if(el)el.value=prefs.gdClientId;}}
-(function initApp(){buildCatSelect('f-cat','f-subcat');initIRSelects();updateContaSelects();buildParcCatSelect('p-cat');const fDataEl=document.getElementById('f-data');if(fDataEl)fDataEl.value=new Date().toISOString().slice(0,10);const pDataEl=document.getElementById('p-data');if(pDataEl)pDataEl.value=new Date().toISOString().slice(0,10);document.querySelectorAll('.ni').forEach(el=>{if(el.dataset.p==='config'){el.addEventListener('click',()=>{initConfig();loadProfileUI();},{once:false});}});initConfig();loadSheetsUrl();handleOAuthCallback();renderDash();function getContaDest(prefix){const sel=document.getElementById(`imp-${prefix}-dest`);return sel?.value||'';}
+
+
+function encerrarItem(tipo, id) {
+  const data = prompt('Data de encerramento (AAAA-MM-DD):', new Date().toISOString().slice(0,10));
+  if (!data) return;
+  const motivo = prompt('Motivo (opcional):', '');
+  if (tipo === 'cartao') {
+    const c = cartoes.find(x => x.id === id);
+    if (c) { c.encerrado = data; c.encerradoMotivo = motivo || ''; }
+  } else if (tipo === 'conta') {
+    const c = contas_bancarias.find(x => x.id === id);
+    if (c) { c.encerrada = data; c.encerradaMotivo = motivo || ''; }
+  } else if (tipo === 'inv') {
+    const i = invs.find(x => x.id === id);
+    if (i) { i.status = 'resgatado'; i.encerrado = data; i.encerradoMotivo = motivo || ''; }
+  }
+  save();
+  if (tipo === 'cartao') renderCartoes();
+  else if (tipo === 'conta') renderContas();
+  else renderInvs();
+  toast('Item encerrado em ' + fDate(data), '🔴');
+}
+
+function reativarItem(tipo, id) {
+  if (!confirm('Reativar este item?')) return;
+  if (tipo === 'cartao') {
+    const c = cartoes.find(x => x.id === id);
+    if (c) { c.encerrado = ''; c.encerradoMotivo = ''; }
+    renderCartoes();
+  } else if (tipo === 'conta') {
+    const c = contas_bancarias.find(x => x.id === id);
+    if (c) { c.encerrada = ''; c.encerradaMotivo = ''; }
+    renderContas();
+  } else if (tipo === 'inv') {
+    const i = invs.find(x => x.id === id);
+    if (i) { i.status = 'ativo'; i.encerrado = ''; }
+    renderInvs();
+  }
+  save();
+  toast('Item reativado', '🟢');
+}
+function checkInvAlertas() {
+  const hoje = new Date();
+  invs.filter(i => (i.status||'ativo')==='ativo' && i.venc).forEach(i => {
+    const dias = Math.ceil((new Date(i.venc) - hoje) / (1000*60*60*24));
+    if (dias >= 0 && dias <= 30) {
+      toast('⚠️ ' + i.nome + ' vence em ' + dias + ' dia(s)!', '📅');
+    }
+  });
+  // Alerta anuidade cartão
+  cartoes.filter(c => c.anuidade && c.anuidData && !c.encerrado).forEach(c => {
+    const dias = Math.ceil((new Date(c.anuidData) - hoje) / (1000*60*60*24));
+    if (dias >= 0 && dias <= 30) {
+      toast('⚠️ Anuidade ' + c.nome + ' vence em ' + dias + 'd!', '💳');
+    }
+  });
+}
+(function initApp(){buildCatSelect('f-cat','f-subcat');initIRSelects();updateContaSelects();buildParcCatSelect('p-cat');const fDataEl=document.getElementById('f-data');if(fDataEl)fDataEl.value=new Date().toISOString().slice(0,10);const pDataEl=document.getElementById('p-data');if(pDataEl)pDataEl.value=new Date().toISOString().slice(0,10);document.querySelectorAll('.ni').forEach(el=>{if(el.dataset.p==='config'){el.addEventListener('click',()=>{initConfig();loadProfileUI();},{once:false});}});initConfig();loadSheetsUrl();handleOAuthCallback();renderDash();setTimeout(checkInvAlertas,2000);function getContaDest(prefix){const sel=document.getElementById(`imp-${prefix}-dest`);return sel?.value||'';}
 function getPerfilImp(prefix){return document.getElementById(`imp-${prefix}-perfil`)?.value||'PF';}
 function handleContaFile(file){if(!file)return;const st=document.getElementById('imp-conta-status');if(st)st.innerHTML=`<div style="color:var(--mu);font-size:12px">⏳ Lendo ${file.name}…</div>`;const ext=file.name.split('.').pop().toLowerCase();const reader=new FileReader();reader.onload=e=>{const text=e.target.result;const conta=getContaDest('conta')||file.name.replace(/\.[^.]+$/,'');const perfil=getPerfilImp('conta');let rows;if(['ofx','xml'].includes(ext)){rows=parseOFX(text,conta);}else if(ext==='csv'){const parsed=XLSX.read(e.target.result,{type:'array'});const ws=parsed.Sheets[parsed.SheetNames[0]];rows=parseCSVExtrato(XLSX.utils.sheet_to_json(ws,{defval:''}),conta,'');}else{rows=parseTextExtrato(text,conta);}
 if(!rows.length){if(st)st.innerHTML='<div class="alert ay">⚠️ Nenhuma transação encontrada</div>';return;}
