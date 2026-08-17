@@ -20,7 +20,7 @@ Sistema de controle financeiro pessoal e empresarial (PF + PJ).
 ## Como instalar / atualizar
 
 ### App PC e Celular (GitHub Pages)
-1. Faça upload dos arquivos `index.html` e `falsp_mobile.html` neste repositório
+1. Faça upload dos arquivos neste repositório via **Add file → Upload files**
 2. Aguarde ~1 minuto — o GitHub Pages publica automaticamente
 3. **App PC:** acesse pelo link acima em qualquer navegador
 4. **App Celular:** acesse o link mobile pelo celular → menu do navegador → **"Adicionar à tela inicial"**
@@ -52,23 +52,58 @@ App Celular  ←──localStorage──→  App PC
 
 ## Funcionalidades
 
-- Lançamentos PF e PJ com categorias e grupos
-- Cartões de crédito — limite, fatura, rotativo, anuidade
-- Cartões de débito vinculados a contas
-- Parcelamentos com detecção automática na importação de faturas
-- Contas bancárias com conciliação de saldo
-- Investimentos com carteira consolidada
-- Imposto de Renda — documentos, deduções e simulação IRPF
-- Contas a Pagar — painel consolidado mensal
-- Contas de consumo (Vivo Celular, Fixo, TV, Internet)
+### Lançamentos
+- PF e PJ com categorias, grupos e sub-categorias
+- Filtros por tipo, perfil, grupo e busca livre
+- Importação de faturas e extratos (OFX, CSV, XLS, PDF colado)
+- Detecção automática de parcelamentos na importação
+
+### Cartões de Crédito
+- Limite, fatura atual, rotativo, anuidade e juros
+- Alerta automático de anuidade vencendo em ≤ 30 dias
+- Portabilidade — campo "substitui" para rastrear troca de cartão
+- Tags livres e notas internas
+- Encerramento com data e motivo — some dos selects mas mantém histórico
+- Filtro "Mostrar encerrados"
+
+### Contas Bancárias
+- Conciliação de saldo calculado vs saldo de referência
+- Conta principal destacada no dashboard
+- Tags, notas internas e data de encerramento
+- Filtro "Mostrar encerradas"
+
+### Investimentos
+- Carteira consolidada com rentabilidade calculada automaticamente
+- Status: Ativo / Resgatado / Vencido
+- Alerta automático de vencimento em ≤ 30 dias
+- Resgate planejado, tags e notas internas
+- Filtro "Mostrar encerrados/resgatados"
+
+### Parcelamentos
+- Controle de parcelas pagas e saldo devedor
+- Detecção automática ao importar faturas
+
+### Imposto de Renda
+- Documentos, deduções e simulação IRPF
+- Exportação CSV para contador
+
+### Contas a Pagar
+- Painel consolidado mensal
+- Registro de pagamento com data, valor e forma
+- Desfazer pagamento
+
+### Contas de Consumo
+- Vivo Celular, Fixo, TV, Internet
+
+### Sincronização e Backup
 - Sync direto com Google Sheets via Apps Script
 - Exportação CSV, Excel (.xlsx) e backup JSON completo
-- Dashboard com resumo mensal, KPIs e gráficos
+- Alertas automáticos ao abrir o app (anuidades, vencimentos)
 
 ## Dados e Privacidade
 
-Todos os dados ficam no seu dispositivo (localStorage) ou na sua própria nuvem (OneDrive / Google Drive / Google Sheets). Nenhum dado é enviado para servidores externos.
+Todos os dados ficam no seu dispositivo (localStorage) ou na sua própria nuvem (Google Sheets / Excel). Nenhum dado é enviado para servidores externos.
 
 ## Tecnologia
 
-HTML + CSS + JavaScript — arquivo único, sem dependências externas, sem backend.
+HTML + CSS + JavaScript puro — arquivo único, sem dependências externas, sem backend.
