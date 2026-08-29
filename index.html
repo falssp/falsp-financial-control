@@ -928,39 +928,35 @@
 <div class="page" id="page-reserva">
   <div class="ph"><h1>🪙 Reserva Física</h1><p>Cédulas e moedas guardadas — não entra em nenhum cálculo de saldo</p></div>
 
-  <!-- Adicionar nota/moeda -->
-  <div class="card">
+  <!-- Formulário -->
+  <div class="card" style="margin-bottom:14px">
     <div class="ch"><h2>Adicionar Cédula / Moeda</h2></div>
     <div class="fpad">
       <div class="fp c4">
         <div class="fg">
           <label>Tipo</label>
-          <select id="rv-tipo">
-            <option value="cedula">Cédula</option>
-            <option value="moeda">Moeda</option>
+          <select id="rv-tipo" onchange="renderReserva()">
+            <option value="cedula">💵 Cédula</option>
+            <option value="moeda">🪙 Moeda</option>
           </select>
         </div>
         <div class="fg">
           <label>Valor unitário (R$)</label>
-          <select id="rv-valor">
-            <option value="0.05">R$ 0,05</option>
-            <option value="0.10">R$ 0,10</option>
-            <option value="0.25">R$ 0,25</option>
-            <option value="0.50">R$ 0,50</option>
-            <option value="1.00">R$ 1,00</option>
-            <option value="2.00">R$ 2,00</option>
-            <option value="5.00">R$ 5,00</option>
-            <option value="10.00">R$ 10,00</option>
-            <option value="20.00">R$ 20,00</option>
-            <option value="50.00">R$ 50,00</option>
-            <option value="100.00" selected>R$ 100,00</option>
+          <select id="rv-valor" onchange="document.getElementById('rv-custom-wrap').style.display=this.value==='custom'?'flex':'none'">
             <option value="200.00">R$ 200,00</option>
+            <option value="100.00" selected>R$ 100,00</option>
+            <option value="50.00">R$ 50,00</option>
+            <option value="20.00">R$ 20,00</option>
+            <option value="10.00">R$ 10,00</option>
+            <option value="5.00">R$ 5,00</option>
+            <option value="2.00">R$ 2,00</option>
+            <option value="1.00">R$ 1,00</option>
+            <option value="0.50">R$ 0,50</option>
+            <option value="0.25">R$ 0,25</option>
+            <option value="0.10">R$ 0,10</option>
+            <option value="0.05">R$ 0,05</option>
             <option value="custom">Outro valor…</option>
           </select>
-        </div>
-        <div class="fg" id="rv-custom-wrap" style="display:none">
-          <label>Valor personalizado</label>
-          <input type="number" id="rv-custom" step="0.01" min="0.01" placeholder="Ex: 0,10">
         </div>
         <div class="fg">
           <label>Quantidade</label>
@@ -971,34 +967,41 @@
           <input type="text" id="rv-obs" placeholder="Opcional">
         </div>
       </div>
-      <div class="fa">
+      <!-- Valor personalizado — só aparece se selecionar "Outro valor…" -->
+      <div id="rv-custom-wrap" style="display:none;align-items:flex-end;gap:12px;margin-top:10px">
+        <div class="fg" style="flex:1;max-width:220px">
+          <label>Valor personalizado (R$)</label>
+          <input type="number" id="rv-custom" step="0.01" min="0.01" placeholder="Ex: 0,10">
+        </div>
+      </div>
+      <div class="fa" style="margin-top:14px">
         <button class="btn btnp" onclick="addReserva()">+ Adicionar</button>
         <button class="btn btng" onclick="clearReserva()">↺ Limpar</button>
       </div>
     </div>
   </div>
 
-  <!-- Resumo -->
+  <!-- KPIs -->
   <div class="g4" style="margin-bottom:14px">
     <div class="kpi">
       <div class="kl">Total em Cédulas</div>
       <div class="kv cg" id="rv-total-cedulas">R$ 0,00</div>
-      <div class="ks" id="rv-n-cedulas"></div>
+      <div class="ks" id="rv-n-cedulas">0 cédulas</div>
     </div>
     <div class="kpi">
       <div class="kl">Total em Moedas</div>
       <div class="kv cy" id="rv-total-moedas">R$ 0,00</div>
-      <div class="ks" id="rv-n-moedas"></div>
+      <div class="ks" id="rv-n-moedas">0 moedas</div>
     </div>
     <div class="kpi">
       <div class="kl">Total Geral</div>
       <div class="kv cb" id="rv-total-geral">R$ 0,00</div>
-      <div class="ks" id="rv-info">Não entra no saldo bancário</div>
+      <div class="ks">Não entra no saldo bancário</div>
     </div>
     <div class="kpi">
-      <div class="kl">Itens cadastrados</div>
+      <div class="kl">Tipos cadastrados</div>
       <div class="kv" id="rv-n-itens">0</div>
-      <div class="ks">tipos distintos</div>
+      <div class="ks">denominações distintas</div>
     </div>
   </div>
 
@@ -1007,7 +1010,15 @@
     <div class="ch"><h2>💵 Cédulas</h2></div>
     <div class="ov">
       <table>
-        <thead><tr><th>Valor</th><th>Qtd.</th><th>Subtotal</th><th>Obs.</th><th></th></tr></thead>
+        <thead>
+          <tr>
+            <th>Valor</th>
+            <th style="text-align:center">Qtd.</th>
+            <th>Subtotal</th>
+            <th>Obs.</th>
+            <th style="text-align:center">Ajuste</th>
+          </tr>
+        </thead>
         <tbody id="rv-body-cedulas"></tbody>
         <tfoot id="rv-foot-cedulas"></tfoot>
       </table>
@@ -1019,7 +1030,15 @@
     <div class="ch"><h2>🪙 Moedas</h2></div>
     <div class="ov">
       <table>
-        <thead><tr><th>Valor</th><th>Qtd.</th><th>Subtotal</th><th>Obs.</th><th></th></tr></thead>
+        <thead>
+          <tr>
+            <th>Valor</th>
+            <th style="text-align:center">Qtd.</th>
+            <th>Subtotal</th>
+            <th>Obs.</th>
+            <th style="text-align:center">Ajuste</th>
+          </tr>
+        </thead>
         <tbody id="rv-body-moedas"></tbody>
         <tfoot id="rv-foot-moedas"></tfoot>
       </table>
