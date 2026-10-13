@@ -274,11 +274,28 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
       <div class="sec-label">Benefícios CLT</div>
       <div class="row2">
         <div class="field">
-          <label>VA / VR</label>
+          <label>VA (alimentação)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="va" value="0" min="0" step="50">
+            <input type="number" id="va" value="0" min="0" step="50" oninput="calc()">
           </div>
+        </div>
+        <div class="field">
+          <label>VR (refeição)</label>
+          <div class="inp-wrap has-pre">
+            <span class="inp-pre">R$</span>
+            <input type="number" id="vr" value="0" min="0" step="50" oninput="calc()">
+          </div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>VA+VR (flex)</label>
+          <div class="inp-wrap has-pre">
+            <span class="inp-pre">R$</span>
+            <input type="number" id="vavr" value="0" min="0" step="50" oninput="calc()">
+          </div>
+          <div class="hint">Quando alimentação e refeição vêm juntos</div>
         </div>
         <div class="field">
           <label>Home office</label>
@@ -328,6 +345,15 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
           <option value="rpa">Autônomo / RPA (sem empresa)</option>
           <option value="custom">Alíquota personalizada</option>
         </select>
+      </div>
+      <div class="field" id="wrap-mei-ativ">
+        <label>Atividade MEI</label>
+        <select id="mei-ativ" onchange="calc()">
+          <option value="86.05">Serviços — R$ 86,05/mês</option>
+          <option value="75.90">Comércio / Indústria — R$ 75,90/mês</option>
+          <option value="96.20">Serviços + Comércio — R$ 96,20/mês</option>
+        </select>
+        <div class="hint">DAS 2025 — inclui INSS, ISS ou ICMS</div>
       </div>
       <div class="field" id="wrap-aliq" hidden>
         <label>Alíquota efetiva (%)</label>
@@ -479,7 +505,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
       </div>
       <div class="dtable">
         <div class="dtable-head">Referência de alíquotas por regime</div>
-        <div class="drow"><span class="k">MEI</span><span class="v dim">DAS fixo ~R$ 75,90/mês · limite R$ 81k/ano</span></div>
+        <div class="drow"><span class="k">MEI</span><span class="v dim">DAS fixo: R$ 86,05 serviços · R$ 75,90 comércio · R$ 96,20 ambos · limite R$ 81k/ano</span></div>
         <div class="drow"><span class="k">Simples — Anexo III</span><span class="v dim">6% na 1ª faixa (até R$ 180k/ano)</span></div>
         <div class="drow"><span class="k">Simples — Anexo V</span><span class="v dim">15,5% na 1ª faixa — serviços com fator R</span></div>
         <div class="drow"><span class="k">Lucro Presumido</span><span class="v dim">~13,4% (ISS+PIS+COFINS+IRPJ+CSLL)</span></div>
@@ -504,7 +530,7 @@ function togPlano() {
   calc();
 }
 const REGIME_INFO = {
-  mei:    { aliq: null,  hint: 'DAS fixo ~R$ 75,90/mês (2025) — independe do faturamento' },
+  mei:    { aliq: null,  hint: 'DAS fixo 2025 — valor varia por atividade (serviços R$ 86,05 · comércio R$ 75,90)' },
   sn3:    { aliq: 0.06,  hint: 'Simples Anexo III: 6% na 1ª faixa, sobe até 14%' },
   sn5:    { aliq: 0.155, hint: 'Simples Anexo V: 15,5% na 1ª faixa, sobe até 30%' },
   lp:     { aliq: 0.134, hint: 'Lucro Presumido: ~13,4% (ISS 2% + PIS 0,65% + COFINS 3% + IRPJ 4,8% + CSLL 2,88%)' },
@@ -517,6 +543,7 @@ function updRegime() {
   const info = REGIME_INFO[r];
   const showAliq = (r === 'sn3' || r === 'sn5' || r === 'lp' || r === 'custom');
   document.getElementById('wrap-aliq').hidden = !showAliq;
+  document.getElementById('wrap-mei-ativ').hidden = (r !== 'mei');
   if (showAliq && info.aliq !== null) {
     document.getElementById('aliq').value = (info.aliq * 100).toFixed(1);
   }
@@ -549,7 +576,7 @@ function irrf(base) {
 
 function calc() {
   const bruto   = +document.getElementById('bruto').value||0;
-  const va      = +document.getElementById('va').value||0;
+  const va      = (+document.getElementById('va').value||0) + (+document.getElementById('vr').value||0) + (+document.getElementById('vavr').value||0);
   const hm      = +document.getElementById('home').value||0;
   const plrSal  = +document.getElementById('plr').value||0;
   const saud    = plano ? (+document.getElementById('saude').value||0) : 0;
@@ -576,7 +603,7 @@ function calc() {
 
   // PJ — impostos por regime
   let impPJ;
-  if (regime === 'mei')      impPJ = 75.90;
+  if (regime === 'mei')      impPJ = +document.getElementById('mei-ativ').value;
   else if (regime === 'rpa') impPJ = 0; // INSS e IR retidos na fonte (difícil isolar)
   else                       impPJ = nf * aliq;
 
@@ -588,7 +615,7 @@ function calc() {
   let beNF = cltTot;
   for(let i=0;i<60;i++){
     let imp2;
-    if (regime==='mei')      imp2 = 75.90;
+    if (regime==='mei')      imp2 = +document.getElementById('mei-ativ').value;
     else if (regime==='rpa') imp2 = 0;
     else                     imp2 = beNF * aliq;
     const liq2 = beNF - imp2 - cnt - saudPJ - inssPJ - fgtsPrv - outros;
@@ -632,5 +659,6 @@ function calc() {
 function s(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
 
 document.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',calc); el.addEventListener('change',calc); });
+updRegime();
 calc();
 </script>
