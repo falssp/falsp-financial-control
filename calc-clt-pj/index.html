@@ -66,6 +66,24 @@ body {
 }
 mono { font-family: 'JetBrains Mono', monospace; }
 
+.btn-pdf {
+  width: 100%; padding: 9px 12px;
+  background: var(--acc); color: #fff;
+  border: none; border-radius: 6px;
+  font: 600 12px/1 'Inter', sans-serif;
+  cursor: pointer; letter-spacing: .02em;
+  transition: opacity .15s;
+}
+.btn-pdf:hover { opacity: .85; }
+
+@media print {
+  .sidebar, .tabs, .diff-bar, .be-box { display: none !important; }
+  .wrap { display: block; }
+  main { padding: 0; }
+  .pane { display: block !important; break-inside: avoid; }
+  body { font-size: 11px; }
+}
+
 /* ── Layout ── */
 .wrap {
   display: flex;
@@ -404,6 +422,10 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="sec" style="padding-bottom:16px">
+      <button class="btn-pdf" onclick="window.print()">⬇ Exportar PDF</button>
     </div>
   </aside>
 
