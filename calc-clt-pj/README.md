@@ -4,7 +4,7 @@ Calculadora financeira interativa para comparação de regimes de contratação.
 
 ## Acesso
 
-[https://falssp.github.io/falsp-profissional/Ferramentas/calc-clt-pj/](https://falssp.github.io/falsp-profissional/Ferramentas/calc-clt-pj/)
+[https://falssp.github.io/falsp-financial-control/calc-clt-pj/](https://falssp.github.io/falsp-financial-control/calc-clt-pj/)
 
 ## O que é
 
