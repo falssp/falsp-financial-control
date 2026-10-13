@@ -106,7 +106,7 @@ mono { font-family: 'JetBrains Mono', monospace; }
 
 /* Sidebar */
 .sidebar {
-  width: 340px;
+  width: 280px;
   flex-shrink: 0;
   background: var(--surf);
   border-right: 1px solid var(--border);
@@ -336,53 +336,46 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           </div>
         </div>
       </div>
-      <div class="row2">
-        <div class="field">
-          <label>PLR (salários/ano)</label>
-          <input type="number" id="plr" value="0" min="0" step="0.25">
-          <div class="hint">1,25 = entre 1 e 1,5 salários</div>
-        </div>
-        <div class="field">
-          <label>&nbsp;</label>
-          <div class="tog-row" onclick="togPlano()" style="margin-bottom:0">
-            <span>Plano de saúde</span>
-            <div class="tog on" id="tog-plano"></div>
-          </div>
-        </div>
+      <div class="field">
+        <label>PLR (salários/ano)</label>
+        <input type="number" id="plr" value="0" min="0" step="0.25">
+        <div class="hint">1,25 = entre 1 e 1,5 salários</div>
+      </div>
+      <div class="tog-row" onclick="togPlano()">
+        <span>Empresa paga plano de saúde</span>
+        <div class="tog on" id="tog-plano"></div>
       </div>
       <div id="wrap-saude">
         <div class="field">
-          <label>Valor do plano (mês)</label>
+          <label>Valor estimado do plano (mês)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
             <input type="number" id="saude" value="0" min="0" step="50">
           </div>
-          <div class="hint">Benefício CLT; PJ contrata por conta</div>
+          <div class="hint">Benefício que CLT inclui; PJ precisa contratar por conta</div>
         </div>
       </div>
     </div>
 
     <div class="sec">
       <div class="sec-label">Configuração PJ</div>
-      <div class="row2">
-        <div class="field">
-          <label>Nota fiscal mensal</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
-            <input type="number" id="nf" value="0" min="0" step="500">
-          </div>
+      <div class="field">
+        <label>Nota fiscal mensal</label>
+        <div class="inp-wrap has-pre">
+          <span class="inp-pre">R$</span>
+          <input type="number" id="nf" value="0" min="0" step="500">
         </div>
-        <div class="field">
-          <label>Regime tributário</label>
-          <select id="regime" onchange="updRegime()">
+      </div>
+      <div class="field">
+        <label>Regime tributário</label>
+        <select id="regime" onchange="updRegime()">
           <option value="mei">MEI (até R$ 81k/ano)</option>
           <option value="sn3">Simples Nacional — Anexo III (serviços)</option>
           <option value="sn5">Simples Nacional — Anexo V (serviços)</option>
           <option value="lp">Lucro Presumido (serviços)</option>
           <option value="rpa">Autônomo / RPA (sem empresa)</option>
           <option value="custom">Alíquota personalizada</option>
-          </select>
-        </div>
+        </select>
       </div>
       <div class="field" id="wrap-mei-ativ">
         <label>Atividade MEI</label>
