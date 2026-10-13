@@ -66,6 +66,19 @@ body {
 }
 mono { font-family: 'JetBrains Mono', monospace; }
 
+.review-banner {
+  margin: 12px 20px 0;
+  padding: 10px 14px;
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid var(--warn);
+  border-radius: 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .btn-pdf {
   width: 100%; padding: 9px 12px;
   background: var(--acc); color: #fff;
@@ -368,10 +381,10 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
         <label>Atividade MEI</label>
         <select id="mei-ativ" onchange="calc()">
           <option value="86.05">Serviços — R$ 86,05/mês</option>
-          <option value="75.90">Comércio / Indústria — R$ 75,90/mês</option>
-          <option value="96.20">Serviços + Comércio — R$ 96,20/mês</option>
+          <option value="82.05">Comércio / Indústria — R$ 82,05/mês</option>
+          <option value="87.05">Serviços + Comércio — R$ 87,05/mês</option>
         </select>
-        <div class="hint">DAS 2025 — inclui INSS, ISS ou ICMS</div>
+        <div class="hint">DAS 2026 — inclui INSS, ISS ou ICMS</div>
       </div>
       <div class="field" id="wrap-aliq" hidden>
         <label>Alíquota efetiva (%)</label>
@@ -431,6 +444,11 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
 
   <!-- ══ MAIN ══ -->
   <main class="main">
+
+    <div class="review-banner" id="review-banner">
+      ⚠️ As tabelas desta calculadora são de <strong id="review-year">2026</strong>. Em janeiro de cada ano, verifique se INSS, IRRF e DAS MEI foram atualizados.
+      <button onclick="document.getElementById('review-banner').hidden=true" style="margin-left:12px;background:none;border:none;cursor:pointer;font-size:13px;opacity:.7">✕</button>
+    </div>
 
     <div class="tabs">
       <button class="tab on" onclick="tab('comp')">Comparativo</button>
@@ -502,8 +520,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
         <div class="dtotal"><span>Total mensal médio</span><span class="v" id="d-total">—</span></div>
       </div>
       <div class="note">
-        <strong>INSS 2025:</strong> 7,5% até R$1.518 · 9% até R$2.793 · 12% até R$4.190 · 14% até R$8.157<br>
-        <strong>IRRF 2025:</strong> isento até R$2.824 · 7,5% até R$3.751 · 15% até R$4.664 · 22,5% até R$6.433 · 27,5% acima<br>
+        <strong>INSS 2026:</strong> 7,5% até R$1.621 · 9% até R$2.903 · 12% até R$4.354 · 14% até R$8.476 (teto)<br>
+        <strong>IRRF 2026:</strong> isento efetivo até R$5.000 (Lei 15.270/2025) · 7,5% até R$2.827 · 15% até R$3.751 · 22,5% até R$4.665 · 27,5% acima<br>
         FGTS não cai direto no bolso mas compõe o pacote total — disponível em demissão sem justa causa + multa de 40%.
       </div>
     </div>
@@ -527,7 +545,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
       </div>
       <div class="dtable">
         <div class="dtable-head">Referência de alíquotas por regime</div>
-        <div class="drow"><span class="k">MEI</span><span class="v dim">DAS fixo: R$ 86,05 serviços · R$ 75,90 comércio · R$ 96,20 ambos · limite R$ 81k/ano</span></div>
+        <div class="drow"><span class="k">MEI</span><span class="v dim">DAS fixo 2026: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ 81k/ano</span></div>
         <div class="drow"><span class="k">Simples — Anexo III</span><span class="v dim">6% na 1ª faixa (até R$ 180k/ano)</span></div>
         <div class="drow"><span class="k">Simples — Anexo V</span><span class="v dim">15,5% na 1ª faixa — serviços com fator R</span></div>
         <div class="drow"><span class="k">Lucro Presumido</span><span class="v dim">~13,4% (ISS+PIS+COFINS+IRPJ+CSLL)</span></div>
@@ -535,7 +553,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
       </div>
       <div class="note">
         <strong>Simples Anexo III vs V:</strong> depende do fator R (folha/faturamento). Folha ≥ 28% do faturamento → Anexo III (menor carga). Consulte um contador.<br>
-        <strong>INSS PJ:</strong> autônomo pode recolher 20% sobre qualquer valor entre o mínimo (R$1.518) e o teto (R$8.157). Contribuindo sobre o teto: ~R$1.631/mês. Contribuindo sobre o mínimo: ~R$304/mês.
+        <strong>INSS PJ 2026:</strong> autônomo recolhe 20% entre o mínimo (R$1.621) e o teto (R$8.476). Contribuindo sobre o teto: ~R$1.695/mês. Contribuindo sobre o mínimo: ~R$324/mês.
       </div>
     </div>
 
@@ -552,7 +570,7 @@ function togPlano() {
   calc();
 }
 const REGIME_INFO = {
-  mei:    { aliq: null,  hint: 'DAS fixo 2025 — valor varia por atividade (serviços R$ 86,05 · comércio R$ 75,90)' },
+  mei:    { aliq: null,  hint: 'DAS fixo 2026 — valor varia por atividade (serviços R$ 86,05 · comércio R$ 82,05)' },
   sn3:    { aliq: 0.06,  hint: 'Simples Anexo III: 6% na 1ª faixa, sobe até 14%' },
   sn5:    { aliq: 0.155, hint: 'Simples Anexo V: 15,5% na 1ª faixa, sobe até 30%' },
   lp:     { aliq: 0.134, hint: 'Lucro Presumido: ~13,4% (ISS 2% + PIS 0,65% + COFINS 3% + IRPJ 4,8% + CSLL 2,88%)' },
@@ -572,7 +590,7 @@ function updRegime() {
   document.getElementById('aliq-hint').textContent = info.hint;
   // RPA: sugerir INSS
   if (r === 'rpa') {
-    document.getElementById('inssPJ').value = 908;
+    document.getElementById('inssPJ').value = 324; // ~mínimo 2026
   }
   calc();
 }
@@ -586,14 +604,22 @@ const neg = n => n>0 ? '− '+R(n) : R(0);
 const pos = n => n>0 ? '+ '+R(n) : R(0);
 
 function inss(b) {
-  const tb = [[0,1518,.075],[1518,2793.88,.09],[2793.88,4190.83,.12],[4190.83,8157.41,.14]];
+  // INSS 2026 — teto R$8.475,55 · mín R$1.621
+  const tb = [[0,1621,.075],[1621,2902.84,.09],[2902.84,4354.27,.12],[4354.27,8475.55,.14]];
   let v=0; for(const[a,f,r] of tb){ if(b<=a)break; v+=(Math.min(b,f)-a)*r; } return v;
 }
 function irrf(base) {
-  if(base<=2824) return 0;
-  const tb=[[2824,3751.05,.075,211.80],[3751.05,4664.68,.15,493.14],[4664.68,6433.58,.225,843.49],[6433.58,Infinity,.275,1164.96]];
-  for(const[a,f,r,d] of tb) if(base<=f) return base*r-d;
-  return 0;
+  // IRRF 2026 — Lei 15.191/2025 + redução Lei 15.270/2025 (isento efetivo até R$5.000)
+  if(base<=2428.80) return 0;
+  const tb=[[2428.80,2826.65,.075,182.16],[2826.65,3751.05,.15,394.16],[3751.05,4664.68,.225,675.49],[4664.68,Infinity,.275,908.73]];
+  let imp=0;
+  for(const[a,f,r,d] of tb) if(base<=f){ imp=base*r-d; break; }
+  if(imp<=0) return 0;
+  // Redução progressiva: até R$5k → redução máx R$312,89; até R$7.350 → decrescente
+  let red=0;
+  if(base<=5000)       red=imp; // isento efetivo
+  else if(base<7350)   red=Math.min(imp, 978.62 - 0.133145*base);
+  return Math.max(0, imp - Math.max(0, red));
 }
 
 function calc() {
