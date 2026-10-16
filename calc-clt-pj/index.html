@@ -369,7 +369,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="field">
         <label>Regime tributário</label>
         <select id="regime" onchange="updRegime()">
-          <option value="mei">MEI (até R$ 81k/ano)</option>
+          <option value="mei" id="opt-mei">MEI (até R$ 81k/ano)</option>
           <option value="sn3">Simples Nacional — Anexo III (serviços)</option>
           <option value="sn5">Simples Nacional — Anexo V (serviços)</option>
           <option value="lp">Lucro Presumido (serviços)</option>
@@ -447,6 +447,9 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
     <div class="review-banner" id="review-banner">
       ⚠️ As tabelas desta calculadora são de <strong id="review-year">2026</strong>. Em janeiro de cada ano, verifique se INSS, IRRF e DAS MEI foram atualizados.
+    </div>
+    <div class="review-banner" id="new-year-banner" hidden style="cursor:pointer" onclick="document.getElementById('new-year-banner').hidden=true">
+      🗓️ <strong>Início de ano detectado.</strong> Verifique e atualize: <strong>tabela INSS</strong>, <strong>tabela IRRF</strong>, <strong>DAS MEI</strong> e <strong>limite MEI</strong>. Clique para fechar.
     </div>
 
     <div class="tabs">
@@ -544,7 +547,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
       <div class="dtable">
         <div class="dtable-head">Referência de alíquotas por regime</div>
-        <div class="drow"><span class="k">MEI</span><span class="v dim">DAS fixo 2026: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ 81k/ano</span></div>
+        <div class="drow"><span class="k">MEI</span><span class="v dim" id="mei-ref-hint">DAS fixo 2026: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ 81k/ano</span></div>
         <div class="drow"><span class="k">Simples — Anexo III</span><span class="v dim">6% na 1ª faixa (até R$ 180k/ano)</span></div>
         <div class="drow"><span class="k">Simples — Anexo V</span><span class="v dim">15,5% na 1ª faixa — serviços com fator R</span></div>
         <div class="drow"><span class="k">Lucro Presumido</span><span class="v dim">~13,4% (ISS+PIS+COFINS+IRPJ+CSLL)</span></div>
@@ -561,6 +564,35 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
 <script>
 let plano = true;
+
+// ── Tabelas por ano ──────────────────────────────────────────────────────────
+const ANO = new Date().getFullYear();
+
+// Limite de faturamento anual MEI
+function meiLimite() {
+  if (ANO >= 2028) return 140000;
+  if (ANO >= 2027) return 110000;
+  return 81000; // 2026 e anteriores
+}
+
+// Detecta início de ano (jan/fev) para mostrar banner de revisão
+(function initAnoNovo() {
+  const m = new Date().getMonth(); // 0=jan, 1=fev
+  if (m <= 1) {
+    document.getElementById('new-year-banner').hidden = false;
+  }
+  // Atualiza label do dropdown MEI
+  const lim = meiLimite();
+  const limK = lim >= 1000 ? (lim/1000)+'k' : lim;
+  const el = document.getElementById('opt-mei');
+  if (el) el.textContent = `MEI (até R$ ${limK}/ano${ANO>=2027?' — atualizado':''}${ANO>=2028?' — 2028+':''})`;
+  // Atualiza hint da tabela de referência
+  const hint = document.getElementById('mei-ref-hint');
+  if (hint) {
+    const proximoAviso = ANO < 2027 ? ' · R$ 110k em 2027 · R$ 140k a partir de 2028' : ANO===2027 ? ' · R$ 140k a partir de 2028' : '';
+    hint.textContent = `DAS fixo ${ANO}: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ ${limK}/ano${proximoAviso}`;
+  }
+})();
 
 function togPlano() {
   plano = !plano;
@@ -602,22 +634,31 @@ const R = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximu
 const neg = n => n>0 ? '− '+R(n) : R(0);
 const pos = n => n>0 ? '+ '+R(n) : R(0);
 
+// INSS — tabelas progressivas por ano
+const INSS_TABELAS = {
+  2026: [[0,1621,.075],[1621,2902.84,.09],[2902.84,4354.27,.12],[4354.27,8475.55,.14]],
+  // 2027: aguardando publicação oficial (normalmente janeiro)
+};
 function inss(b) {
-  // INSS 2026 — teto R$8.475,55 · mín R$1.621
-  const tb = [[0,1621,.075],[1621,2902.84,.09],[2902.84,4354.27,.12],[4354.27,8475.55,.14]];
+  const tb = INSS_TABELAS[ANO] || INSS_TABELAS[2026];
   let v=0; for(const[a,f,r] of tb){ if(b<=a)break; v+=(Math.min(b,f)-a)*r; } return v;
 }
+
+// IRRF — tabelas por ano
+// 2026: Lei 15.191/2025 + redução Lei 15.270/2025 (isento efetivo até R$5.000)
+const IRRF_TABELAS = {
+  2026: { tb:[[2428.80,2826.65,.075,182.16],[2826.65,3751.05,.15,394.16],[3751.05,4664.68,.225,675.49],[4664.68,Infinity,.275,908.73]], isento:2428.80, redMax:5000, redLim:7350, redK:978.62, redR:0.133145 },
+  // 2027: aguardando publicação oficial
+};
 function irrf(base) {
-  // IRRF 2026 — Lei 15.191/2025 + redução Lei 15.270/2025 (isento efetivo até R$5.000)
-  if(base<=2428.80) return 0;
-  const tb=[[2428.80,2826.65,.075,182.16],[2826.65,3751.05,.15,394.16],[3751.05,4664.68,.225,675.49],[4664.68,Infinity,.275,908.73]];
+  const cfg = IRRF_TABELAS[ANO] || IRRF_TABELAS[2026];
+  if(base<=cfg.isento) return 0;
   let imp=0;
-  for(const[a,f,r,d] of tb) if(base<=f){ imp=base*r-d; break; }
+  for(const[a,f,r,d] of cfg.tb) if(base<=f){ imp=base*r-d; break; }
   if(imp<=0) return 0;
-  // Redução progressiva: até R$5k → redução máx R$312,89; até R$7.350 → decrescente
   let red=0;
-  if(base<=5000)       red=imp; // isento efetivo
-  else if(base<7350)   red=Math.min(imp, 978.62 - 0.133145*base);
+  if(base<=cfg.redMax)      red=imp;
+  else if(base<cfg.redLim)  red=Math.min(imp, cfg.redK - cfg.redR*base);
   return Math.max(0, imp - Math.max(0, red));
 }
 
@@ -705,6 +746,7 @@ function calc() {
 
 function s(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
 
+document.getElementById('review-year').textContent = ANO;
 document.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',calc); el.addEventListener('change',calc); });
 updRegime();
 calc();
