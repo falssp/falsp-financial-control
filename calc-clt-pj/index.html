@@ -318,12 +318,16 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .faq-empty { text-align:center; padding:32px 16px; color:var(--fg3); font-size:12px }
 
 /* ── Análise IA ────────────────────────────────────────────────────────────── */
-.ia-hero { background:linear-gradient(135deg,var(--pj-bg),color-mix(in srgb,var(--acc) 8%,var(--surf))); border:1px solid var(--border); border-radius:10px; padding:20px 22px; margin-bottom:18px }
-.ia-hero h2 { font-size:15px; font-weight:700; margin-bottom:5px }
-.ia-hero p  { font-size:12px; color:var(--fg2); line-height:1.65 }
-.ia-key-row { display:flex; gap:8px; align-items:center; margin-bottom:10px }
-.ia-key-inp { flex:1; background:var(--inp); border:1px solid var(--border); border-radius:5px; padding:8px 10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg); outline:none; transition:border-color .15s }
-.ia-key-inp:focus { border-color:var(--acc) }
+.ia-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px }
+.ia-head h2 { font-size:15px; font-weight:700 }
+.btn-cfg-open { background:var(--inp); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font:500 12px 'Inter',sans-serif; color:var(--fg2); cursor:pointer; display:flex; align-items:center; gap:5px; transition:all .15s }
+.btn-cfg-open:hover { border-color:var(--acc); color:var(--acc) }
+.btn-cfg-open .cfg-dot { width:7px; height:7px; border-radius:50%; background:var(--border); flex-shrink:0 }
+.btn-cfg-open .cfg-dot.ok { background:#22c55e }
+.ia-no-key { background:var(--surf); border:1px solid var(--border); border-radius:10px; padding:28px 24px; text-align:center; margin-bottom:16px }
+.ia-no-key p { font-size:12px; color:var(--fg2); margin-bottom:16px; line-height:1.65 }
+.btn-cfg-cta { background:var(--acc); color:#fff; border:none; border-radius:6px; padding:10px 20px; font:600 13px 'Inter',sans-serif; cursor:pointer; display:inline-flex; align-items:center; gap:6px }
+.btn-cfg-cta:hover { opacity:.85 }
 .btn-ia { background:var(--acc); color:#fff; border:none; border-radius:6px; padding:10px 18px; font:600 13px 'Inter',sans-serif; cursor:pointer; width:100%; margin-bottom:14px }
 .btn-ia:hover { opacity:.85 }
 .btn-ia:disabled { opacity:.5; cursor:not-allowed }
@@ -342,6 +346,31 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .loading-dots span:nth-child(2) { animation-delay:.15s }
 .loading-dots span:nth-child(3) { animation-delay:.3s }
 @keyframes dot-b { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+/* ── Modal de configuração IA ─────── */
+.cfg-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:none; align-items:center; justify-content:center; padding:16px }
+.cfg-overlay.open { display:flex }
+.cfg-modal { background:var(--surf); border-radius:14px; width:100%; max-width:560px; max-height:calc(100dvh - 32px); overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.3); display:flex; flex-direction:column }
+.cfg-modal-hdr { padding:18px 20px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start }
+.cfg-modal-hdr h2 { font-size:14px; font-weight:700; margin-bottom:2px }
+.cfg-modal-hdr p { font-size:11px; color:var(--fg3) }
+.cfg-close { background:none; border:none; font-size:18px; cursor:pointer; color:var(--fg3); line-height:1; padding:2px 4px }
+.cfg-close:hover { color:var(--fg) }
+.cfg-modal-body { overflow-y:auto; padding:20px }
+.cfg-tabs { display:flex; gap:4px; margin-bottom:18px }
+.cfg-tab { flex:1; padding:7px 10px; border-radius:6px; border:1px solid var(--border); background:var(--inp); font:500 12px 'Inter',sans-serif; color:var(--fg2); cursor:pointer; text-align:center; transition:all .15s }
+.cfg-tab:hover { border-color:var(--acc) }
+.cfg-tab.on { border-color:var(--acc); background:color-mix(in srgb,var(--acc) 10%,var(--surf)); color:var(--fg); font-weight:600 }
+.cfg-panel { display:none }
+.cfg-panel.on { display:block }
+.cfg-field { margin-bottom:14px }
+.cfg-field label { display:block; font-size:11px; font-weight:600; color:var(--fg2); margin-bottom:5px }
+.cfg-inp { width:100%; background:var(--inp); border:1px solid var(--border); border-radius:5px; padding:8px 10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg); outline:none; transition:border-color .15s }
+.cfg-inp:focus { border-color:var(--acc) }
+.cfg-link { font-size:11px; color:var(--acc); text-decoration:none }
+.cfg-link:hover { text-decoration:underline }
+.cfg-note { font-size:11px; color:var(--fg3); line-height:1.6; margin-top:8px }
+.btn-cfg-save { background:var(--acc); color:#fff; border:none; border-radius:6px; padding:9px 18px; font:600 12px 'Inter',sans-serif; cursor:pointer; margin-top:6px }
+.btn-cfg-save:hover { opacity:.85 }
 </style>
 
 <div class="wrap">
@@ -652,19 +681,71 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
     <!-- Análise IA -->
     <div class="pane" id="pane-ia">
       <div style="max-width:680px">
-        <div class="ia-hero">
+        <div class="ia-head">
           <h2>🤖 Análise com IA</h2>
-          <p>Insira uma chave Gemini (gratuita) e clique em "Analisar". A IA lê os números do cenário atual e dá uma recomendação fundamentada sobre CLT vs PJ.</p>
+          <button class="btn-cfg-open" id="cfgBtn" onclick="openCfg()">
+            <span class="cfg-dot" id="cfg-dot"></span>
+            <span id="cfg-btn-label">Configurar IA</span>
+          </button>
         </div>
-        <div class="ia-key-row">
-          <input class="ia-key-inp" id="ia-key" type="password" placeholder="Chave Gemini API (AIza…) — salva no navegador">
-          <button class="btn-save-scen" onclick="saveIAKey()" style="background:var(--fg2)">Salvar chave</button>
+        <div id="ia-no-key" class="ia-no-key">
+          <p>Configure uma chave de API para que a IA analise o cenário e recomende CLT ou PJ com base nos seus números.</p>
+          <button class="btn-cfg-cta" onclick="openCfg()">🔷 Configurar IA gratuita</button>
+          <div style="margin-top:10px;font-size:11px;color:var(--fg3)">Já tem OpenAI ou Claude? <a onclick="openCfg()" style="color:var(--acc);cursor:pointer">Configure aqui</a></div>
         </div>
-        <div class="note" style="margin-bottom:16px">Obtenha gratuitamente em <strong>aistudio.google.com</strong> → Get API Key. A chave fica apenas no seu navegador, nunca é enviada para outro lugar.</div>
-        <button class="btn-ia" id="btn-ia" onclick="analisarIA()">🤖 Analisar cenário atual</button>
+        <div id="ia-ready" style="display:none">
+          <button class="btn-ia" id="btn-ia" onclick="analisarIA()">🤖 Analisar cenário atual</button>
+        </div>
         <div class="ia-result" id="ia-result">
           <div class="ia-label">💡 Análise da IA</div>
           <div class="ia-answer" id="ia-answer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de configuração IA -->
+    <div class="cfg-overlay" id="cfgOverlay" onclick="overlayClose(event)">
+      <div class="cfg-modal">
+        <div class="cfg-modal-hdr">
+          <div>
+            <h2>Configurar IA</h2>
+            <p>As chaves ficam só no seu navegador — nunca são enviadas para outro servidor.</p>
+          </div>
+          <button class="cfg-close" onclick="closeCfg()">✕</button>
+        </div>
+        <div class="cfg-modal-body">
+          <div class="cfg-tabs">
+            <button class="cfg-tab on" id="ctab-gemini" onclick="setCfgTab('gemini')">🔷 Gemini</button>
+            <button class="cfg-tab" id="ctab-claude" onclick="setCfgTab('claude')">🟠 Claude</button>
+            <button class="cfg-tab" id="ctab-openai" onclick="setCfgTab('openai')">🟢 OpenAI</button>
+          </div>
+          <!-- Gemini -->
+          <div class="cfg-panel on" id="cpanel-gemini">
+            <div class="cfg-field">
+              <label>Chave API Gemini (gratuita)</label>
+              <input class="cfg-inp" id="key-gemini" type="password" placeholder="AIza…">
+            </div>
+            <div class="cfg-note">Obtenha gratuitamente em <a class="cfg-link" href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> → Get API Key. Cota gratuita generosa para uso pessoal.</div>
+            <button class="btn-cfg-save" onclick="saveCfgKey('gemini')">Salvar chave Gemini</button>
+          </div>
+          <!-- Claude -->
+          <div class="cfg-panel" id="cpanel-claude">
+            <div class="cfg-field">
+              <label>Chave API Anthropic (Claude)</label>
+              <input class="cfg-inp" id="key-claude" type="password" placeholder="sk-ant-…">
+            </div>
+            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Tem custo por uso (pay-as-you-go).</div>
+            <button class="btn-cfg-save" onclick="saveCfgKey('claude')">Salvar chave Claude</button>
+          </div>
+          <!-- OpenAI -->
+          <div class="cfg-panel" id="cpanel-openai">
+            <div class="cfg-field">
+              <label>Chave API OpenAI</label>
+              <input class="cfg-inp" id="key-openai" type="password" placeholder="sk-…">
+            </div>
+            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>. Custo estimado: ~US$0,01–0,03 por análise.</div>
+            <button class="btn-cfg-save" onclick="saveCfgKey('openai')">Salvar chave OpenAI</button>
+          </div>
         </div>
       </div>
     </div>
@@ -988,19 +1069,61 @@ function renderScen() {
   window.scenData = scens.map(s => s.data);
 }
 
-// ══ ANÁLISE IA ════════════════════════════════════════════════════════════════
-function saveIAKey() {
-  const k = (document.getElementById('ia-key').value||'').trim();
-  if (k) { try { localStorage.setItem('clt_gemini_key',k); } catch(e){} alert('Chave salva!'); }
+// ══ ANÁLISE IA — Modal multi-provider ════════════════════════════════════════
+const IA_PROVIDERS = {
+  gemini: { name:'Gemini', ls:'clt_key_gemini' },
+  claude: { name:'Claude', ls:'clt_key_claude' },
+  openai: { name:'OpenAI', ls:'clt_key_openai' },
+};
+let cfgActiveTab = 'gemini';
+
+function getKey(pid) { try { return localStorage.getItem(IA_PROVIDERS[pid].ls)||''; } catch(e){ return ''; } }
+function hasKey()    { return Object.keys(IA_PROVIDERS).some(p => !!getKey(p)); }
+function activeProvider() { return Object.keys(IA_PROVIDERS).find(p => !!getKey(p)) || null; }
+
+function updateIAState() {
+  const ok = hasKey();
+  document.getElementById('ia-no-key').style.display = ok ? 'none' : '';
+  document.getElementById('ia-ready').style.display   = ok ? '' : 'none';
+  const dot = document.getElementById('cfg-dot');
+  const lbl = document.getElementById('cfg-btn-label');
+  if (dot) dot.className = 'cfg-dot' + (ok ? ' ok' : '');
+  if (lbl) { const p = activeProvider(); lbl.textContent = p ? `IA: ${IA_PROVIDERS[p].name}` : 'Configurar IA'; }
+  // pre-fill inputs
+  Object.keys(IA_PROVIDERS).forEach(p => {
+    const el = document.getElementById('key-'+p);
+    if (el) el.value = getKey(p);
+  });
 }
-(function loadIAKey() {
-  try { const k=localStorage.getItem('clt_gemini_key'); if(k) document.getElementById('ia-key').value=k; } catch(e){}
-})();
+
+function openCfg()  { document.getElementById('cfgOverlay').classList.add('open'); updateIAState(); }
+function closeCfg() { document.getElementById('cfgOverlay').classList.remove('open'); updateIAState(); }
+function overlayClose(e) { if (e.target===document.getElementById('cfgOverlay')) closeCfg(); }
+
+function setCfgTab(pid) {
+  cfgActiveTab = pid;
+  Object.keys(IA_PROVIDERS).forEach(p => {
+    document.getElementById('ctab-'+p)?.classList.toggle('on', p===pid);
+    document.getElementById('cpanel-'+p)?.classList.toggle('on', p===pid);
+  });
+}
+
+function saveCfgKey(pid) {
+  const val = (document.getElementById('key-'+pid)?.value||'').trim();
+  try {
+    if (val) localStorage.setItem(IA_PROVIDERS[pid].ls, val);
+    else localStorage.removeItem(IA_PROVIDERS[pid].ls);
+  } catch(e){}
+  closeCfg();
+}
+
+// Load keys on init
+(function() { updateIAState(); })();
 
 async function analisarIA() {
-  const key = (document.getElementById('ia-key').value||'').trim();
-  if (!key) { alert('Insira sua chave Gemini antes de analisar.'); return; }
-  try { localStorage.setItem('clt_gemini_key',key); } catch(e){}
+  const pid = activeProvider();
+  if (!pid) { openCfg(); return; }
+  const key = getKey(pid);
 
   const btn=document.getElementById('btn-ia'), res=document.getElementById('ia-result'), ans=document.getElementById('ia-answer');
   btn.disabled=true; btn.textContent='Analisando…';
@@ -1025,12 +1148,12 @@ DADOS:
 - Líquido mensal CLT (com direitos): ${cltV}
 - Líquido mensal PJ: ${pjV}
 - Ponto de equilíbrio (NF mínima p/ empatar CLT): ${beV}
-- Comparativo atual: ${diffV}
+- Comparativo: ${diffV}
 
-Responda em português com estas 4 seções exatas (use ## para o título de cada):
+Responda em português com 4 seções (use ## para o título de cada):
 
 ## ✅ Veredicto
-Uma frase clara: CLT ou PJ compensa mais agora, e por quê.
+Uma frase clara: CLT ou PJ compensa mais, e por quê.
 
 ## 📊 Análise dos números
 2-3 pontos sobre o que os números revelam.
@@ -1044,16 +1167,36 @@ Uma frase clara: CLT ou PJ compensa mais agora, e por quê.
 Use valores em reais quando útil. Seja direto.`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.35,maxOutputTokens:900}})
-    });
-    const data = await r.json();
-    if (data.error) throw new Error(data.error.message);
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
+    let text;
+    if (pid === 'gemini') {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+        { method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.35,maxOutputTokens:900}}) });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error.message);
+      text = d.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
+    } else if (pid === 'claude') {
+      const r = await fetch('https://api.anthropic.com/v1/messages',
+        { method:'POST', headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+          body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:900,messages:[{role:'user',content:prompt}]}) });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error.message);
+      text = d.content?.[0]?.text||'Sem resposta.';
+    } else {
+      const r = await fetch('https://api.openai.com/v1/chat/completions',
+        { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+          body:JSON.stringify({model:'gpt-4o-mini',max_tokens:900,messages:[{role:'user',content:prompt}]}) });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error.message);
+      text = d.choices?.[0]?.message?.content||'Sem resposta.';
+    }
     ans.innerHTML = fmtIA(text);
   } catch(e) {
-    ans.innerHTML = `<span style="color:var(--warn)">Erro: ${e.message}. Verifique sua chave Gemini.</span>`;
+    const msg = String(e.message||e);
+    const authErr = msg.includes('401')||msg.includes('403')||msg.includes('invalid')||msg.toLowerCase().includes('key');
+    ans.innerHTML = authErr
+      ? `❌ Chave inválida ou sem permissão. <a onclick="openCfg()" style="color:var(--acc);cursor:pointer">Reconfigurar</a>`
+      : `<span style="color:var(--warn)">Erro: ${msg}</span>`;
   } finally {
     btn.disabled=false; btn.textContent='🤖 Analisar cenário atual';
   }
