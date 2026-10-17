@@ -296,6 +296,16 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .btn-save-scen:hover { opacity:.85 }
 
 /* ── Dúvidas Frequentes ────────────────────────────────────────────────────── */
+.faq-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap }
+.faq-search-wrap { flex:1; min-width:180px; position:relative }
+.faq-search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--fg3); pointer-events:none }
+.faq-search { width:100%; background:var(--inp); border:1px solid var(--border); border-radius:6px; padding:8px 10px 8px 32px; font:13px 'Inter',sans-serif; color:var(--fg); outline:none; transition:border-color .15s }
+.faq-search:focus { border-color:var(--acc) }
+.faq-count { font-size:11px; color:var(--fg3); white-space:nowrap }
+.faq-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px }
+.faq-chip { padding:5px 13px; border-radius:20px; border:1px solid var(--border); background:var(--surf); font:500 11px 'Inter',sans-serif; color:var(--fg2); cursor:pointer; transition:all .15s }
+.faq-chip:hover { border-color:var(--acc); color:var(--acc) }
+.faq-chip.on { background:var(--acc); border-color:var(--acc); color:#fff }
 .faq-grid { display:flex; flex-direction:column; gap:8px }
 .faq-item { background:var(--surf); border:1px solid var(--border); border-radius:8px; overflow:hidden }
 .faq-q { padding:13px 16px; cursor:pointer; font-weight:500; font-size:13px; display:flex; justify-content:space-between; align-items:center; user-select:none }
@@ -305,6 +315,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .faq-item.open .faq-a { display:block }
 .faq-item.open .faq-chev { transform:rotate(180deg) }
 .faq-tag { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-weight:700; margin-right:6px }
+.faq-empty { text-align:center; padding:32px 16px; color:var(--fg3); font-size:12px }
 
 /* ── Análise IA ────────────────────────────────────────────────────────────── */
 .ia-hero { background:linear-gradient(135deg,var(--pj-bg),color-mix(in srgb,var(--acc) 8%,var(--surf))); border:1px solid var(--border); border-radius:10px; padding:20px 22px; margin-bottom:18px }
@@ -627,7 +638,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
     <!-- Dúvidas Frequentes -->
     <div class="pane" id="pane-faq">
-      <div class="dtable-head" style="background:none;padding:0 0 16px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3)">Dúvidas frequentes — CLT vs PJ</div>
+      <div class="faq-toolbar">
+        <div class="faq-search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="faq-search" id="faq-search" type="search" placeholder="Buscar pergunta ou palavra-chave…" oninput="filterFAQ()">
+        </div>
+        <span class="faq-count" id="faq-count"></span>
+      </div>
+      <div class="faq-chips" id="faq-chips"></div>
       <div class="faq-grid" id="faq-grid"></div>
     </div>
 
@@ -866,17 +884,51 @@ const FAQ_DATA = [
     a:'PJ costuma compensar quando: (1) a NF está <strong>bem acima do ponto de equilíbrio</strong>; (2) você já tem contador, saúde e INSS provisionados; (3) o regime tributário tem carga baixa (MEI ou Simples III); (4) você tem <strong>estabilidade de contratos</strong> — sem risco de meses sem faturar. Lembre: PJ não tem estabilidade de emprego, aviso prévio, seguro-desemprego nem FGTS automático. Risco maior requer remuneração maior.' },
 ];
 
-let faqDone = false;
+let faqDone = false, faqChip = 'Todas';
 function renderFAQ() {
-  if (faqDone) return; faqDone = true;
+  if (faqDone) { filterFAQ(); return; } faqDone = true;
+  // Build items HTML (hidden initially, filterFAQ will show them)
   document.getElementById('faq-grid').innerHTML = FAQ_DATA.map((f,i) => `
-    <div class="faq-item" id="fi${i}">
+    <div class="faq-item" id="fi${i}" data-tag="${f.tag}">
       <div class="faq-q" onclick="document.getElementById('fi${i}').classList.toggle('open')">
         <span><span class="faq-tag" style="color:${f.tc};background:${f.tb}">${f.tag}</span>${f.q}</span>
         <em class="faq-chev">▾</em>
       </div>
       <div class="faq-a">${f.a}</div>
     </div>`).join('');
+  // Build chips
+  const tags = ['Todas', ...new Set(FAQ_DATA.map(f=>f.tag))];
+  document.getElementById('faq-chips').innerHTML = tags.map(t =>
+    `<button class="faq-chip${t==='Todas'?' on':''}" onclick="setFaqChip('${t}')">${t}</button>`
+  ).join('');
+  filterFAQ();
+}
+function setFaqChip(tag) {
+  faqChip = tag;
+  document.querySelectorAll('.faq-chip').forEach(b => b.classList.toggle('on', b.textContent===tag));
+  filterFAQ();
+}
+function filterFAQ() {
+  const q = (document.getElementById('faq-search')?.value||'').toLowerCase();
+  const items = document.querySelectorAll('.faq-item');
+  let vis = 0;
+  items.forEach(el => {
+    const tagMatch = faqChip==='Todas' || el.dataset.tag===faqChip;
+    const textMatch = !q || el.textContent.toLowerCase().includes(q);
+    const show = tagMatch && textMatch;
+    el.style.display = show ? '' : 'none';
+    if (show) vis++;
+  });
+  const total = FAQ_DATA.length;
+  const cnt = document.getElementById('faq-count');
+  if (cnt) cnt.textContent = vis === total ? `${total} perguntas` : `${vis} de ${total}`;
+  const grid = document.getElementById('faq-grid');
+  const empty = grid.querySelector('.faq-empty');
+  if (!vis) {
+    if (!empty) grid.insertAdjacentHTML('beforeend','<div class="faq-empty">Nenhuma pergunta encontrada.</div>');
+  } else {
+    if (empty) empty.remove();
+  }
 }
 
 // ══ CENÁRIOS ══════════════════════════════════════════════════════════════════
