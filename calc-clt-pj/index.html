@@ -279,6 +279,58 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
   .tabs { width: 100%; }
   .tab { flex: 1; text-align: center; }
 }
+
+/* ── Cenários ─────────────────────────────────────────────────────────────── */
+.scen-empty { text-align:center; padding:32px 16px; color:var(--fg3); font-size:12px; line-height:1.7 }
+.scen-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; min-height:20px }
+.scen-item { background:var(--surf); border:1px solid var(--border); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:border-color .15s }
+.scen-item:hover { border-color:var(--acc) }
+.scen-name { font-weight:600; font-size:13px; flex:1 }
+.scen-ts   { font-size:10px; color:var(--fg3) }
+.scen-del  { background:none; border:none; color:var(--fg3); cursor:pointer; font-size:14px; padding:2px 5px; border-radius:4px; flex-shrink:0 }
+.scen-del:hover { background:var(--warn-bg); color:var(--warn) }
+.save-scen-row { display:flex; gap:8px; align-items:center; margin-bottom:10px }
+.save-scen-inp { flex:1; background:var(--inp); border:1px solid var(--border); border-radius:5px; padding:8px 10px; font-family:'Inter',sans-serif; font-size:12px; color:var(--fg); outline:none; transition:border-color .15s }
+.save-scen-inp:focus { border-color:var(--acc) }
+.btn-save-scen { background:var(--acc); color:#fff; border:none; border-radius:5px; padding:8px 14px; font:600 12px 'Inter',sans-serif; cursor:pointer; white-space:nowrap }
+.btn-save-scen:hover { opacity:.85 }
+
+/* ── Dúvidas Frequentes ────────────────────────────────────────────────────── */
+.faq-grid { display:flex; flex-direction:column; gap:8px }
+.faq-item { background:var(--surf); border:1px solid var(--border); border-radius:8px; overflow:hidden }
+.faq-q { padding:13px 16px; cursor:pointer; font-weight:500; font-size:13px; display:flex; justify-content:space-between; align-items:center; user-select:none }
+.faq-q:hover { background:color-mix(in srgb,var(--border) 30%,transparent) }
+.faq-chev { color:var(--fg3); transition:transform .2s; flex-shrink:0; margin-left:10px; font-style:normal }
+.faq-a { display:none; padding:12px 16px 14px; font-size:12.5px; color:var(--fg2); line-height:1.75; border-top:1px solid var(--border) }
+.faq-item.open .faq-a { display:block }
+.faq-item.open .faq-chev { transform:rotate(180deg) }
+.faq-tag { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-weight:700; margin-right:6px }
+
+/* ── Análise IA ────────────────────────────────────────────────────────────── */
+.ia-hero { background:linear-gradient(135deg,var(--pj-bg),color-mix(in srgb,var(--acc) 8%,var(--surf))); border:1px solid var(--border); border-radius:10px; padding:20px 22px; margin-bottom:18px }
+.ia-hero h2 { font-size:15px; font-weight:700; margin-bottom:5px }
+.ia-hero p  { font-size:12px; color:var(--fg2); line-height:1.65 }
+.ia-key-row { display:flex; gap:8px; align-items:center; margin-bottom:10px }
+.ia-key-inp { flex:1; background:var(--inp); border:1px solid var(--border); border-radius:5px; padding:8px 10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg); outline:none; transition:border-color .15s }
+.ia-key-inp:focus { border-color:var(--acc) }
+.btn-ia { background:var(--acc); color:#fff; border:none; border-radius:6px; padding:10px 18px; font:600 13px 'Inter',sans-serif; cursor:pointer; width:100%; margin-bottom:14px }
+.btn-ia:hover { opacity:.85 }
+.btn-ia:disabled { opacity:.5; cursor:not-allowed }
+.ia-result { background:var(--surf); border:1px solid var(--border); border-radius:10px; padding:20px; display:none }
+.ia-result.show { display:block }
+.ia-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--acc); margin-bottom:12px }
+.ia-answer { font-size:13px; line-height:1.8; color:var(--fg) }
+.ia-answer strong { font-weight:600 }
+.ia-answer h3 { font-size:13px; font-weight:700; margin:16px 0 6px; color:var(--fg) }
+.ia-answer code { background:var(--inp); padding:1px 5px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-size:11px }
+.ia-answer ul { padding-left:0; list-style:none }
+.ia-answer li { display:flex; gap:6px; margin:3px 0 }
+.ia-answer li::before { content:"•"; color:var(--acc); flex-shrink:0 }
+.loading-dots { display:inline-flex; gap:4px; align-items:center }
+.loading-dots span { width:6px; height:6px; background:var(--acc); border-radius:50%; animation:dot-b .8s infinite }
+.loading-dots span:nth-child(2) { animation-delay:.15s }
+.loading-dots span:nth-child(3) { animation-delay:.3s }
+@keyframes dot-b { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
 </style>
 
 <div class="wrap">
@@ -456,6 +508,9 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <button class="tab on" onclick="tab('comp')">Comparativo</button>
       <button class="tab" onclick="tab('clt')">CLT</button>
       <button class="tab" onclick="tab('pj')">PJ</button>
+      <button class="tab" onclick="tab('scen')">💾 Cenários</button>
+      <button class="tab" onclick="tab('faq')">❓ Dúvidas</button>
+      <button class="tab" onclick="tab('ia')">🤖 Análise IA</button>
     </div>
 
     <!-- Comparativo -->
@@ -559,6 +614,43 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
     </div>
 
+    <!-- Cenários -->
+    <div class="pane" id="pane-scen">
+      <div class="dtable-head" style="background:none;padding:0 0 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3)">Cenários salvos</div>
+      <div id="scen-list" class="scen-list"></div>
+      <div class="save-scen-row">
+        <input class="save-scen-inp" id="scen-name" type="text" placeholder="Nome do cenário — ex: Proposta A, Empresa X, Freelance…" maxlength="40">
+        <button class="btn-save-scen" onclick="saveScen()">💾 Salvar</button>
+      </div>
+      <div class="note">Até 5 cenários guardados no navegador. Clique num cenário para carregar os dados.</div>
+    </div>
+
+    <!-- Dúvidas Frequentes -->
+    <div class="pane" id="pane-faq">
+      <div class="dtable-head" style="background:none;padding:0 0 16px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3)">Dúvidas frequentes — CLT vs PJ</div>
+      <div class="faq-grid" id="faq-grid"></div>
+    </div>
+
+    <!-- Análise IA -->
+    <div class="pane" id="pane-ia">
+      <div style="max-width:680px">
+        <div class="ia-hero">
+          <h2>🤖 Análise com IA</h2>
+          <p>Insira uma chave Gemini (gratuita) e clique em "Analisar". A IA lê os números do cenário atual e dá uma recomendação fundamentada sobre CLT vs PJ.</p>
+        </div>
+        <div class="ia-key-row">
+          <input class="ia-key-inp" id="ia-key" type="password" placeholder="Chave Gemini API (AIza…) — salva no navegador">
+          <button class="btn-save-scen" onclick="saveIAKey()" style="background:var(--fg2)">Salvar chave</button>
+        </div>
+        <div class="note" style="margin-bottom:16px">Obtenha gratuitamente em <strong>aistudio.google.com</strong> → Get API Key. A chave fica apenas no seu navegador, nunca é enviada para outro lugar.</div>
+        <button class="btn-ia" id="btn-ia" onclick="analisarIA()">🤖 Analisar cenário atual</button>
+        <div class="ia-result" id="ia-result">
+          <div class="ia-label">💡 Análise da IA</div>
+          <div class="ia-answer" id="ia-answer"></div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -626,8 +718,10 @@ function updRegime() {
   calc();
 }
 function tab(name) {
-  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('on', ['comp','clt','pj'][i]===name));
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('on', ['comp','clt','pj','scen','faq','ia'][i]===name));
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id==='pane-'+name));
+  if (name==='scen') renderScen();
+  if (name==='faq')  renderFAQ();
 }
 
 const R = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -750,4 +844,178 @@ document.getElementById('review-year').textContent = ANO;
 document.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',calc); el.addEventListener('change',calc); });
 updRegime();
 calc();
+// ══ FAQ ═══════════════════════════════════════════════════════════════════════
+const FAQ_DATA = [
+  { tag:'Geral', tc:'#555', tb:'#f0f0f0',
+    q:'O que é o "ponto de equilíbrio" e como usar?',
+    a:'É a <strong>nota fiscal mínima</strong> que o PJ precisa emitir para que o líquido mensal seja igual ao pacote total CLT. Se sua NF está abaixo desse valor, a CLT compensa mais. Se está acima, o PJ já supera. O cálculo é iterativo (60 iterações) porque as despesas fixas do PJ (impostos, contador, saúde…) dependem do próprio valor da NF.' },
+  { tag:'CLT', tc:'var(--clt)', tb:'var(--clt-bg)',
+    q:'O que entra no "líquido mensal médio CLT"?',
+    a:'<strong>Salário líquido</strong> (bruto − INSS − IRRF) mais as parcelas mensais de: <strong>13º salário</strong> (÷12), <strong>férias + ⅓</strong> (÷12), <strong>FGTS 8%</strong> (÷12), <strong>PLR</strong> (÷12), VA/VR + home office e <strong>plano de saúde</strong> pago pela empresa. O FGTS não cai no bolso todo mês, mas compõe o pacote total disponível em demissão sem justa causa + multa de 40%.' },
+  { tag:'CLT', tc:'var(--clt)', tb:'var(--clt-bg)',
+    q:'Como as férias entram no comparativo?',
+    a:'No CLT: 1 salário bruto + ⅓ constitucional (com INSS e IRRF calculados sobre esse valor), dividido por 12 — entra como crédito mensal médio. No PJ: não há férias remuneradas. A calculadora desconta <strong>1/12 do líquido CLT</strong> como "custo de oportunidade de férias" no PJ — esse mês parado sem faturar precisa ser provisionado.' },
+  { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
+    q:'FGTS existe para PJ?',
+    a:'Não formalmente — o PJ não tem direito ao FGTS. Mas como boa prática, recomenda-se <strong>provisionar 8% do líquido</strong> mensalmente numa conta separada, criando uma reserva equivalente. A calculadora tem o campo "Provisão FGTS" para isso: o valor é descontado do líquido PJ, tornando a comparação mais justa e realista.' },
+  { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
+    q:'Qual regime tributário devo escolher?',
+    a:'Depende do faturamento anual e do perfil de despesas:<ul><li><strong>MEI</strong>: até R$ 81k/ano (2026). DAS fixo e simples, mas CNPJ limitado para grandes empresas.</li><li><strong>Simples Anexo III</strong>: fator R ≥ 28% (folha/faturamento alta). Alíquota começa em 6%.</li><li><strong>Simples Anexo V</strong>: fator R &lt; 28%. Começa em 15,5%.</li><li><strong>Lucro Presumido</strong>: faturamento acima do Simples ou quando a carga é menor. ~13,4% efetivo.</li><li><strong>Autônomo/RPA</strong>: sem empresa. INSS 11% + IRRF retido pelo tomador.</li></ul>Consulte sempre um contador para o seu caso específico.' },
+  { tag:'Geral', tc:'#555', tb:'#f0f0f0',
+    q:'Quando o PJ definitivamente compensa?',
+    a:'PJ costuma compensar quando: (1) a NF está <strong>bem acima do ponto de equilíbrio</strong>; (2) você já tem contador, saúde e INSS provisionados; (3) o regime tributário tem carga baixa (MEI ou Simples III); (4) você tem <strong>estabilidade de contratos</strong> — sem risco de meses sem faturar. Lembre: PJ não tem estabilidade de emprego, aviso prévio, seguro-desemprego nem FGTS automático. Risco maior requer remuneração maior.' },
+];
+
+let faqDone = false;
+function renderFAQ() {
+  if (faqDone) return; faqDone = true;
+  document.getElementById('faq-grid').innerHTML = FAQ_DATA.map((f,i) => `
+    <div class="faq-item" id="fi${i}">
+      <div class="faq-q" onclick="document.getElementById('fi${i}').classList.toggle('open')">
+        <span><span class="faq-tag" style="color:${f.tc};background:${f.tb}">${f.tag}</span>${f.q}</span>
+        <em class="faq-chev">▾</em>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('');
+}
+
+// ══ CENÁRIOS ══════════════════════════════════════════════════════════════════
+function getScens() { try { return JSON.parse(localStorage.getItem('clt_scenarios')||'[]'); } catch(e){ return []; } }
+function putScens(a) { try { localStorage.setItem('clt_scenarios', JSON.stringify(a)); } catch(e){} }
+
+function snapForm() {
+  const ids = ['bruto','va','vr','vavr','home','plr','saude','nf','aliq','contador','saudePJ','inssPJ','fgtsProv','outros'];
+  const d = {}; ids.forEach(id => { const el=document.getElementById(id); if(el) d[id]=el.value; });
+  d.regime    = document.getElementById('regime').value;
+  d['mei-ativ'] = document.getElementById('mei-ativ').value;
+  d.plano     = plano;
+  return d;
+}
+
+function applyForm(d) {
+  const ids = ['bruto','va','vr','vavr','home','plr','saude','nf','aliq','contador','saudePJ','inssPJ','fgtsProv','outros'];
+  ids.forEach(id => { const el=document.getElementById(id); if(el && d[id]!=null) el.value=d[id]; });
+  if (d.regime) { document.getElementById('regime').value=d.regime; updRegime(); }
+  if (d['mei-ativ']) document.getElementById('mei-ativ').value=d['mei-ativ'];
+  if (d.plano !== undefined && d.plano !== plano) togPlano();
+  calc();
+}
+
+function saveScen() {
+  const name = (document.getElementById('scen-name').value||'').trim();
+  if (!name) { document.getElementById('scen-name').focus(); return; }
+  const scens = getScens();
+  if (scens.length >= 5) scens.shift();
+  scens.push({ name, ts: Date.now(), data: snapForm() });
+  putScens(scens);
+  document.getElementById('scen-name').value = '';
+  renderScen();
+}
+
+function delScen(idx, ev) {
+  ev.stopPropagation();
+  const scens = getScens(); scens.splice(idx,1); putScens(scens); renderScen();
+}
+
+function renderScen() {
+  const scens = getScens();
+  const el = document.getElementById('scen-list');
+  if (!scens.length) {
+    el.innerHTML = '<div class="scen-empty">Nenhum cenário salvo ainda.<br>Preencha os dados e clique em "💾 Salvar".</div>';
+    return;
+  }
+  el.innerHTML = [...scens].reverse().map((s,ri) => {
+    const i = scens.length-1-ri;
+    const dt = new Date(s.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    return `<div class="scen-item" onclick="applyForm(scenData[${i}])">
+      <div style="flex:1"><div class="scen-name">${s.name}</div><div class="scen-ts">${dt}</div></div>
+      <button class="scen-del" onclick="delScen(${i},event)" title="Excluir">✕</button>
+    </div>`;
+  }).join('');
+  // expose data globally for onclick
+  window.scenData = scens.map(s => s.data);
+}
+
+// ══ ANÁLISE IA ════════════════════════════════════════════════════════════════
+function saveIAKey() {
+  const k = (document.getElementById('ia-key').value||'').trim();
+  if (k) { try { localStorage.setItem('clt_gemini_key',k); } catch(e){} alert('Chave salva!'); }
+}
+(function loadIAKey() {
+  try { const k=localStorage.getItem('clt_gemini_key'); if(k) document.getElementById('ia-key').value=k; } catch(e){}
+})();
+
+async function analisarIA() {
+  const key = (document.getElementById('ia-key').value||'').trim();
+  if (!key) { alert('Insira sua chave Gemini antes de analisar.'); return; }
+  try { localStorage.setItem('clt_gemini_key',key); } catch(e){}
+
+  const btn=document.getElementById('btn-ia'), res=document.getElementById('ia-result'), ans=document.getElementById('ia-answer');
+  btn.disabled=true; btn.textContent='Analisando…';
+  res.classList.add('show');
+  ans.innerHTML='<span class="loading-dots"><span></span><span></span><span></span></span>';
+
+  const bruto = +document.getElementById('bruto').value||0;
+  const nf    = +document.getElementById('nf').value||0;
+  const regime= document.getElementById('regime').value;
+  const cltV  = document.getElementById('c-clt-total')?.textContent||'—';
+  const pjV   = document.getElementById('c-pj-total')?.textContent||'—';
+  const beV   = document.getElementById('be-val')?.textContent||'—';
+  const diffV = document.getElementById('diff-bar')?.textContent||'—';
+  const RL = {mei:'MEI',sn3:'Simples Anexo III',sn5:'Simples Anexo V',lp:'Lucro Presumido',rpa:'Autônomo/RPA',custom:'Alíquota personalizada'};
+
+  const prompt = `Você é especialista em CLT vs PJ no Brasil em ${new Date().getFullYear()}. Analise este cenário e seja direto e prático.
+
+DADOS:
+- Salário bruto CLT: R$ ${bruto.toLocaleString('pt-BR')}
+- Nota fiscal PJ mensal: R$ ${nf.toLocaleString('pt-BR')}
+- Regime tributário: ${RL[regime]||regime}
+- Líquido mensal CLT (com direitos): ${cltV}
+- Líquido mensal PJ: ${pjV}
+- Ponto de equilíbrio (NF mínima p/ empatar CLT): ${beV}
+- Comparativo atual: ${diffV}
+
+Responda em português com estas 4 seções exatas (use ## para o título de cada):
+
+## ✅ Veredicto
+Uma frase clara: CLT ou PJ compensa mais agora, e por quê.
+
+## 📊 Análise dos números
+2-3 pontos sobre o que os números revelam.
+
+## ⚠️ Riscos e pontos de atenção
+2-3 riscos do cenário aparentemente melhor.
+
+## 💡 O que fazer agora
+2-3 ações concretas e práticas.
+
+Use valores em reais quando útil. Seja direto.`;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.35,maxOutputTokens:900}})
+    });
+    const data = await r.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
+    ans.innerHTML = fmtIA(text);
+  } catch(e) {
+    ans.innerHTML = `<span style="color:var(--warn)">Erro: ${e.message}. Verifique sua chave Gemini.</span>`;
+  } finally {
+    btn.disabled=false; btn.textContent='🤖 Analisar cenário atual';
+  }
+}
+
+function fmtIA(t) {
+  return t
+    .replace(/## (.+)/g, '<h3>$1</h3>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^[-•]\s+(.+)/gm, '<li>$1</li>')
+    .replace(/((<li>[^<]*<\/li>\s*)+)/g, '<ul>$1</ul>')
+    .replace(/\n{2,}/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
 </script>
