@@ -247,16 +247,13 @@ function _renderDashboard(ss, ws) {
 
   var ts    = Utilities.formatDate(new Date(), 'America/Sao_Paulo', "dd/MM/yyyy 'às' HH:mm");
   var nCols = 6;
-  var nRows = 25;
 
-  // Deletar extras
+  // Deletar colunas extras
   var maxC = ws.getMaxColumns();
   if (maxC > nCols) ws.deleteColumns(nCols + 1, maxC - nCols);
-  var maxR = ws.getMaxRows();
-  if (maxR > nRows + 1) ws.deleteRows(nRows + 2, maxR - nRows - 1);
 
-  // Centralizar TUDO
-  ws.getRange(1, 1, nRows, nCols)
+  // Centralizar primeiras linhas (fixas)
+  ws.getRange(1, 1, 12, nCols)
     .setHorizontalAlignment('center')
     .setVerticalAlignment('middle');
 
@@ -368,40 +365,71 @@ function _renderDashboard(ss, ws) {
   ws.getRange(12, 5, 1, 2).setValue('').setBackground('#0d0d24');
   ws.setRowHeight(12, 28);
 
-  // Linhas 13-24 — meses
+  // Linhas 13+ — todos os meses presentes nos dados, do mais recente para o mais antigo
   var meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  var ano   = new Date().getFullYear();
-  for (var m = 0; m < 12; m++) {
-    var row   = 13 + m;
-    var label = meses[m] + '/' + ano;
-    var bg    = m % 2 === 0 ? '#ffffff' : '#f0f2ff';
+
+  // Coletar dados de lançamentos por mês (label = "Mmm/AAAA")
+  var mesMap = {};
+  if (wsLanc && wsLanc.getLastRow() > 1) {
+    var dadosLanc = wsLanc.getRange(2, 1, wsLanc.getLastRow()-1, 6).getValues();
+    dadosLanc.forEach(function(r) {
+      var label = r[4]; // coluna "Mês" = índice 4
+      if (!label) return;
+      if (!mesMap[label]) mesMap[label] = { rec: 0, des: 0 };
+      var tipo = r[3], val = parseFloat(r[5]) || 0;
+      if (tipo === 'Receita') mesMap[label].rec += val;
+      if (tipo === 'Despesa') mesMap[label].des += val;
+    });
+  }
+
+  // Ordenar meses do mais recente para o mais antigo
+  var labelsOrdenados = Object.keys(mesMap).sort(function(a, b) {
+    // label formato "Mmm/AAAA" — extrair ano e índice do mês
+    function parseMes(l) {
+      var parts = l.split('/');
+      var ano = parseInt(parts[1]) || 0;
+      var mi  = meses.indexOf(parts[0]);
+      return ano * 12 + mi;
+    }
+    return parseMes(b) - parseMes(a); // decrescente
+  });
+
+  // Se não houver dados, mostrar o ano corrente como fallback
+  if (labelsOrdenados.length === 0) {
+    var anoAtual = new Date().getFullYear();
+    for (var mi = 11; mi >= 0; mi--) {
+      labelsOrdenados.push(meses[mi] + '/' + anoAtual);
+      mesMap[meses[mi] + '/' + anoAtual] = { rec: 0, des: 0 };
+    }
+  }
+
+  // Limpar linhas antigas a partir de 13
+  var maxR = ws.getMaxRows();
+  var nMeses = labelsOrdenados.length;
+  var nRows = 12 + nMeses + 1; // header rows + data rows + footer
+  if (maxR > nRows + 2) ws.deleteRows(nRows + 2, maxR - nRows - 1);
+
+  for (var idx = 0; idx < labelsOrdenados.length; idx++) {
+    var row   = 13 + idx;
+    var label = labelsOrdenados[idx];
+    var bg    = idx % 2 === 0 ? '#ffffff' : '#f0f2ff';
+    var dados = mesMap[label] || { rec: 0, des: 0 };
 
     ws.getRange(row, 1).setValue(label).setBackground(bg).setFontColor('#1a1a2e').setFontSize(10);
-
-    var recMes = 0, desMes = 0;
-    if (wsLanc && wsLanc.getLastRow() > 1) {
-      var dadosMes = wsLanc.getRange(2, 1, wsLanc.getLastRow()-1, 6).getValues();
-      dadosMes.forEach(function(r) {
-        if (r[4] === label) {
-          if (r[3] === 'Receita') recMes += parseFloat(r[5]) || 0;
-          if (r[3] === 'Despesa') desMes += parseFloat(r[5]) || 0;
-        }
-      });
-    }
-    ws.getRange(row, 2).setValue(recMes)
+    ws.getRange(row, 2).setValue(dados.rec)
       .setBackground(bg).setFontColor('#1a6644').setFontSize(10).setNumberFormat("R$ #,##0.00");
-    ws.getRange(row, 3).setValue(desMes)
+    ws.getRange(row, 3).setValue(dados.des)
       .setBackground(bg).setFontColor('#991111').setFontSize(10).setNumberFormat("R$ #,##0.00");
-    ws.getRange(row, 4).setValue(recMes - desMes)
+    ws.getRange(row, 4).setValue(dados.rec - dados.des)
       .setBackground(bg).setFontColor('#1a1a8a').setFontSize(10).setNumberFormat("R$ #,##0.00");
-
     ws.getRange(row, 5, 1, 2).setValue('').setBackground(bg);
     ws.setRowHeight(row, 22);
   }
 
-  // Linha 25 — espaço final
-  ws.getRange(25, 1, 1, nCols).merge().setValue('').setBackground('#0d0d24');
-  ws.setRowHeight(25, 8);
+  // Linha final — espaço
+  var lastRow = 13 + labelsOrdenados.length;
+  ws.getRange(lastRow, 1, 1, nCols).merge().setValue('').setBackground('#0d0d24');
+  ws.setRowHeight(lastRow, 8);
 
   // Autoajuste colunas
   ws.autoResizeColumns(1, nCols);
