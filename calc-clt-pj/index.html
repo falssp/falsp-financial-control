@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <title>Calculadora CLT vs PJ</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -65,6 +66,9 @@ body {
   height: 100%;
 }
 mono { font-family: 'JetBrains Mono', monospace; }
+
+/* FIX: placeholder visível mas suave */
+input[type="number"]::placeholder { color: var(--fg3); opacity: 1; }
 
 .review-banner {
   margin: 0 0 12px;
@@ -388,7 +392,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <label>Bruto mensal</label>
         <div class="inp-wrap has-pre">
           <span class="inp-pre">R$</span>
-          <input type="number" id="bruto" value="0" min="0" step="100">
+          <!-- FIX: placeholder em vez de value="0" para não precisar apagar antes de digitar -->
+          <input type="number" id="bruto" placeholder="0" min="0" step="100">
         </div>
       </div>
     </div>
@@ -400,14 +405,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>VA (alimentação)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="va" value="0" min="0" step="50" oninput="calc()">
+            <input type="number" id="va" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>VR (refeição)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="vr" value="0" min="0" step="50" oninput="calc()">
+            <input type="number" id="vr" placeholder="0" min="0" step="50">
           </div>
         </div>
       </div>
@@ -416,7 +421,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>VA+VR (flex)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="vavr" value="0" min="0" step="50" oninput="calc()">
+            <input type="number" id="vavr" placeholder="0" min="0" step="50">
           </div>
           <div class="hint">Quando alimentação e refeição vêm juntos</div>
         </div>
@@ -424,13 +429,13 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>Home office</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="home" value="0" min="0" step="50">
+            <input type="number" id="home" placeholder="0" min="0" step="50">
           </div>
         </div>
       </div>
       <div class="field">
         <label>PLR (salários/ano)</label>
-        <input type="number" id="plr" value="0" min="0" step="0.25">
+        <input type="number" id="plr" placeholder="0" min="0" step="0.25">
         <div class="hint">1,25 = entre 1 e 1,5 salários</div>
       </div>
       <div class="tog-row" onclick="togPlano()">
@@ -442,7 +447,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>Valor estimado do plano (mês)</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="saude" value="0" min="0" step="50">
+            <input type="number" id="saude" placeholder="0" min="0" step="50">
           </div>
           <div class="hint">Benefício que CLT inclui; PJ precisa contratar por conta</div>
         </div>
@@ -455,7 +460,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <label>Nota fiscal mensal</label>
         <div class="inp-wrap has-pre">
           <span class="inp-pre">R$</span>
-          <input type="number" id="nf" value="0" min="0" step="500">
+          <input type="number" id="nf" placeholder="0" min="0" step="500">
         </div>
       </div>
       <div class="field">
@@ -480,6 +485,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
       <div class="field" id="wrap-aliq" hidden>
         <label>Alíquota efetiva (%)</label>
+        <!-- aliq mantém value pois é preenchido automaticamente ao trocar regime -->
         <input type="number" id="aliq" value="6" min="0.1" max="50" step="0.5">
         <div class="hint" id="aliq-hint"></div>
       </div>
@@ -492,14 +498,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>Contador</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="contador" value="0" min="0" step="50">
+            <input type="number" id="contador" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>Plano saúde</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="saudePJ" value="0" min="0" step="50">
+            <input type="number" id="saudePJ" placeholder="0" min="0" step="50">
           </div>
         </div>
       </div>
@@ -507,7 +513,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <label>INSS próprio</label>
         <div class="inp-wrap has-pre">
           <span class="inp-pre">R$</span>
-          <input type="number" id="inssPJ" value="0" min="0" step="50">
+          <input type="number" id="inssPJ" placeholder="0" min="0" step="50">
         </div>
         <div class="hint">Autônomo: ~20% s/ sal. contribuição (teto ~R$1.794)</div>
       </div>
@@ -516,14 +522,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <label>Provisão FGTS</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="fgtsProv" value="0" min="0" step="50">
+            <input type="number" id="fgtsProv" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>Outros</label>
           <div class="inp-wrap has-pre">
             <span class="inp-pre">R$</span>
-            <input type="number" id="outros" value="0" min="0" step="50">
+            <input type="number" id="outros" placeholder="0" min="0" step="50">
           </div>
         </div>
       </div>
@@ -619,7 +625,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="note">
         <strong>INSS 2026:</strong> 7,5% até R$1.621 · 9% até R$2.903 · 12% até R$4.354 · 14% até R$8.476 (teto)<br>
         <strong>IRRF 2026:</strong> isento efetivo até R$5.000 (Lei 15.270/2025) · 7,5% até R$2.827 · 15% até R$3.751 · 22,5% até R$4.665 · 27,5% acima<br>
-        FGTS não cai direto no bolso mas compõe o pacote total — disponível em demissão sem justa causa + multa de 40%.
+        FGTS não cai direto no bolso mas compõe o pacote total — disponível em demissão sem justa causa + multa de 40%.<br>
+        <strong>Férias:</strong> o ⅓ constitucional é isento de INSS e de IRRF (IN RFB 971/2009 · art. 7° CF).
       </div>
     </div>
 
@@ -823,9 +830,9 @@ function tab(name) {
   if (name==='faq')  renderFAQ();
 }
 
-const R = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-const neg = n => n>0 ? '− '+R(n) : R(0);
-const pos = n => n>0 ? '+ '+R(n) : R(0);
+const R = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const neg = n => n>0 ? '− '+R(n) : R(0);
+const pos = n => n>0 ? '+ '+R(n) : R(0);
 
 // INSS — tabelas progressivas por ano
 const INSS_TABELAS = {
@@ -870,41 +877,51 @@ function calc() {
   const fgtsPrv = +document.getElementById('fgtsProv').value||0;
   const outros  = +document.getElementById('outros').value||0;
 
-  // CLT
+  // ── CLT ──────────────────────────────────────────────────────────────────
   const ins   = inss(bruto);
   const ir    = irrf(bruto - ins);
   const liq   = bruto - ins - ir;
   const dec   = liq / 12;
-  const ferBr = bruto + bruto/3;
-  const ferLiq= ferBr - inss(ferBr) - irrf(ferBr - inss(ferBr));
-  const fer   = ferLiq / 12;
+
+  // FIX: ⅓ constitucional é isento de INSS e de IRRF (IN RFB 971/2009 · art. 7° CF)
+  // INSS incide só sobre o salário base; IRRF também só sobre (base − INSS)
+  const ferINSS = inss(bruto);
+  const ferIR   = irrf(bruto - ferINSS);
+  const ferLiq  = bruto - ferINSS - ferIR + bruto / 3; // 1/3 entra líquido, sem tributação
+  const fer     = ferLiq / 12;
+
   const fgt   = bruto * .08;
   const plrM  = liq * plrSal / 12;
   const cltTot= liq + dec + fer + fgt + va + hm + plrM + saud;
 
-  // PJ — impostos por regime
+  // ── PJ ───────────────────────────────────────────────────────────────────
   let impPJ;
   if (regime === 'mei')      impPJ = +document.getElementById('mei-ativ').value;
   else if (regime === 'rpa') impPJ = 0; // INSS e IR retidos na fonte (difícil isolar)
   else                       impPJ = nf * aliq;
 
-  const ferOpp = liq / 12;
-  const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros;
+  // FIX: custo de oportunidade das férias baseado na NF (1 mês perdido ÷ 12)
+  // Antes usava liq (salário CLT líquido), que é grandeza errada para o PJ
+  const ferOpp = nf / 12;
+
+  // FIX: ferOpp agora entra em pjDesp → pjLiq já reflete o custo de férias,
+  // ficando consistente com o break-even que também inclui a provisão de férias
+  const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros + ferOpp;
   const pjLiq  = nf - pjDesp;
 
-  // Break-even iterativo
+  // ── Break-even iterativo ──────────────────────────────────────────────────
   let beNF = cltTot;
   for(let i=0;i<60;i++){
     let imp2;
     if (regime==='mei')      imp2 = +document.getElementById('mei-ativ').value;
     else if (regime==='rpa') imp2 = 0;
     else                     imp2 = beNF * aliq;
-    const liq2 = beNF - imp2 - cnt - saudPJ - inssPJ - fgtsPrv - outros;
-    const fer2 = liq2 / 12;
+    // FIX: fer2 baseado na própria NF estimada (beNF), não no líquido PJ
+    const fer2 = beNF / 12;
     beNF = cltTot + imp2 + cnt + saudPJ + inssPJ + fgtsPrv + outros + fer2;
   }
 
-  // ── DOM ──
+  // ── DOM ──────────────────────────────────────────────────────────────────
   // Comparativo
   s('c-clt-total', R(cltTot));
   s('c-pj-total', R(pjLiq));
@@ -941,8 +958,15 @@ function s(id, val) { const el=document.getElementById(id); if(el) el.textConten
 
 document.getElementById('review-year').textContent = ANO;
 document.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',calc); el.addEventListener('change',calc); });
+
+// FIX: seleciona todo o conteúdo ao focar — não precisa apagar antes de digitar
+document.querySelectorAll('input[type="number"]').forEach(el => {
+  el.addEventListener('focus', () => el.select());
+});
+
 updRegime();
 calc();
+
 // ══ FAQ ═══════════════════════════════════════════════════════════════════════
 const FAQ_DATA = [
   { tag:'Geral', tc:'#555', tb:'#f0f0f0',
@@ -953,7 +977,7 @@ const FAQ_DATA = [
     a:'<strong>Salário líquido</strong> (bruto − INSS − IRRF) mais as parcelas mensais de: <strong>13º salário</strong> (÷12), <strong>férias + ⅓</strong> (÷12), <strong>FGTS 8%</strong> (÷12), <strong>PLR</strong> (÷12), VA/VR + home office e <strong>plano de saúde</strong> pago pela empresa. O FGTS não cai no bolso todo mês, mas compõe o pacote total disponível em demissão sem justa causa + multa de 40%.' },
   { tag:'CLT', tc:'var(--clt)', tb:'var(--clt-bg)',
     q:'Como as férias entram no comparativo?',
-    a:'No CLT: 1 salário bruto + ⅓ constitucional (com INSS e IRRF calculados sobre esse valor), dividido por 12 — entra como crédito mensal médio. No PJ: não há férias remuneradas. A calculadora desconta <strong>1/12 do líquido CLT</strong> como "custo de oportunidade de férias" no PJ — esse mês parado sem faturar precisa ser provisionado.' },
+    a:'No CLT: 1 salário bruto + ⅓ constitucional (o ⅓ é isento de INSS e IRRF por lei), dividido por 12 — entra como crédito mensal médio. No PJ: não há férias remuneradas. A calculadora desconta <strong>1/12 da NF mensal</strong> como custo de oportunidade — esse mês parado sem faturar precisa ser provisionado.' },
   { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
     q:'FGTS existe para PJ?',
     a:'Não formalmente — o PJ não tem direito ao FGTS. Mas como boa prática, recomenda-se <strong>provisionar 8% do líquido</strong> mensalmente numa conta separada, criando uma reserva equivalente. A calculadora tem o campo "Provisão FGTS" para isso: o valor é descontado do líquido PJ, tornando a comparação mais justa e realista.' },
@@ -968,7 +992,6 @@ const FAQ_DATA = [
 let faqDone = false, faqChip = 'Todas';
 function renderFAQ() {
   if (faqDone) { filterFAQ(); return; } faqDone = true;
-  // Build items HTML (hidden initially, filterFAQ will show them)
   document.getElementById('faq-grid').innerHTML = FAQ_DATA.map((f,i) => `
     <div class="faq-item" id="fi${i}" data-tag="${f.tag}">
       <div class="faq-q" onclick="document.getElementById('fi${i}').classList.toggle('open')">
@@ -977,7 +1000,6 @@ function renderFAQ() {
       </div>
       <div class="faq-a">${f.a}</div>
     </div>`).join('');
-  // Build chips
   const tags = ['Todas', ...new Set(FAQ_DATA.map(f=>f.tag))];
   document.getElementById('faq-chips').innerHTML = tags.map(t =>
     `<button class="faq-chip${t==='Todas'?' on':''}" onclick="setFaqChip('${t}')">${t}</button>`
@@ -1065,7 +1087,6 @@ function renderScen() {
       <button class="scen-del" onclick="delScen(${i},event)" title="Excluir">✕</button>
     </div>`;
   }).join('');
-  // expose data globally for onclick
   window.scenData = scens.map(s => s.data);
 }
 
@@ -1089,7 +1110,6 @@ function updateIAState() {
   const lbl = document.getElementById('cfg-btn-label');
   if (dot) dot.className = 'cfg-dot' + (ok ? ' ok' : '');
   if (lbl) { const p = activeProvider(); lbl.textContent = p ? `IA: ${IA_PROVIDERS[p].name}` : 'Configurar IA'; }
-  // pre-fill inputs
   Object.keys(IA_PROVIDERS).forEach(p => {
     const el = document.getElementById('key-'+p);
     if (el) el.value = getKey(p);
@@ -1117,7 +1137,6 @@ function saveCfgKey(pid) {
   closeCfg();
 }
 
-// Load keys on init
 (function() { updateIAState(); })();
 
 async function analisarIA() {
@@ -1212,5 +1231,4 @@ function fmtIA(t) {
     .replace(/\n{2,}/g, '<br><br>')
     .replace(/\n/g, '<br>');
 }
-
 </script>
