@@ -21,217 +21,127 @@
   font-variant-numeric: tabular-nums;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg:     #111110;
-  --surf:   #1a1917;
-  --border: #2c2b27;
-  --fg:     #edebe6;
-  --fg2:    #a09d97;
-  --fg3:    #615e58;
-  --clt:    #3ecf7a;
-  --clt-bg: #0c2419;
-  --pj:     #5b9cf6;
-  --pj-bg:  #0d1e38;
-  --warn:   #f49240;
-  --warn-bg:#2a1700;
-  --acc:    #5b87f5;
-  --inp:    #222118;
-  --shadow: 0 1px 4px rgba(0,0,0,.4);
-  color-scheme: dark;
+  --bg:     #111110; --surf:   #1a1917; --border: #2c2b27;
+  --fg:     #edebe6; --fg2:    #a09d97; --fg3:    #615e58;
+  --clt:    #3ecf7a; --clt-bg: #0c2419; --pj:     #5b9cf6; --pj-bg:  #0d1e38;
+  --warn:   #f49240; --warn-bg:#2a1700; --acc:    #5b87f5; --inp:    #222118;
+  --shadow: 0 1px 4px rgba(0,0,0,.4); color-scheme: dark;
 }}
 :root[data-theme="dark"] {
-  --bg:     #111110;
-  --surf:   #1a1917;
-  --border: #2c2b27;
-  --fg:     #edebe6;
-  --fg2:    #a09d97;
-  --fg3:    #615e58;
-  --clt:    #3ecf7a;
-  --clt-bg: #0c2419;
-  --pj:     #5b9cf6;
-  --pj-bg:  #0d1e38;
-  --warn:   #f49240;
-  --warn-bg:#2a1700;
-  --acc:    #5b87f5;
-  --inp:    #222118;
-  --shadow: 0 1px 4px rgba(0,0,0,.4);
-  color-scheme: dark;
+  --bg:     #111110; --surf:   #1a1917; --border: #2c2b27;
+  --fg:     #edebe6; --fg2:    #a09d97; --fg3:    #615e58;
+  --clt:    #3ecf7a; --clt-bg: #0c2419; --pj:     #5b9cf6; --pj-bg:  #0d1e38;
+  --warn:   #f49240; --warn-bg:#2a1700; --acc:    #5b87f5; --inp:    #222118;
+  --shadow: 0 1px 4px rgba(0,0,0,.4); color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f4f3f0; --surf: #ffffff; --border: #e8e6e1;
+  --fg: #1c1b18; --fg2: #6b6860; --fg3: #a8a49e;
+  --clt: #167a45; --clt-bg: #edf7f2; --pj: #1a52a0; --pj-bg: #eaf1fb;
+  --warn: #b85c00; --warn-bg: #fef3e8; --acc: #2c5ee8; --inp: #faf9f7;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04); color-scheme: light;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px; line-height: 1.5;
-  background: var(--bg); color: var(--fg);
-  height: 100%;
-}
+body { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; line-height: 1.5; background: var(--bg); color: var(--fg); height: 100%; }
 mono { font-family: 'JetBrains Mono', monospace; }
 
-/* FIX: placeholder visível mas suave */
 input[type="number"]::placeholder { color: var(--fg3); opacity: 1; }
 
 .review-banner {
-  margin: 0 0 12px;
-  padding: 10px 14px;
-  background: var(--warn-bg);
-  color: var(--warn);
-  border: 1px solid var(--warn);
-  border-radius: 6px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  margin: 0 0 12px; padding: 10px 14px;
+  background: var(--warn-bg); color: var(--warn);
+  border: 1px solid var(--warn); border-radius: 6px;
+  font-size: 11px; display: flex; align-items: center; gap: 4px;
 }
-
 .btn-pdf {
-  width: 100%; padding: 9px 12px;
-  background: var(--acc); color: #fff;
-  border: none; border-radius: 6px;
-  font: 600 12px/1 'Inter', sans-serif;
-  cursor: pointer; letter-spacing: .02em;
-  transition: opacity .15s;
+  width: 100%; padding: 9px 12px; background: var(--acc); color: #fff;
+  border: none; border-radius: 6px; font: 600 12px/1 'Inter', sans-serif;
+  cursor: pointer; letter-spacing: .02em; transition: opacity .15s;
 }
 .btn-pdf:hover { opacity: .85; }
+.btn-share {
+  width: 100%; padding: 9px 12px; background: var(--inp); color: var(--fg2);
+  border: 1px solid var(--border); border-radius: 6px; font: 500 12px/1 'Inter', sans-serif;
+  cursor: pointer; transition: all .15s; margin-top: 6px;
+}
+.btn-share:hover { border-color: var(--acc); color: var(--acc); }
+.btn-share.copied { background: var(--clt-bg); color: var(--clt); border-color: var(--clt); }
 
 @media print {
   .sidebar, .tabs, .diff-bar, .be-box { display: none !important; }
-  .wrap { display: block; }
-  main { padding: 0; }
+  .wrap { display: block; } main { padding: 0; }
   .pane { display: block !important; break-inside: avoid; }
   body { font-size: 11px; }
 }
 
-/* ── Layout ── */
-.wrap {
-  display: flex;
-  height: 100%;
-  min-height: 100%;
-}
+.wrap { display: flex; height: 100%; min-height: 100%; }
 
-/* Sidebar */
 .sidebar {
-  width: 320px;
-  flex-shrink: 0;
-  background: var(--surf);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 0 0 32px;
+  width: 320px; flex-shrink: 0; background: var(--surf);
+  border-right: 1px solid var(--border); overflow-y: auto; padding: 0 0 32px;
 }
 .sidebar-head {
-  padding: 16px 18px 12px;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  background: var(--surf);
-  z-index: 2;
+  padding: 16px 18px 12px; border-bottom: 1px solid var(--border);
+  position: sticky; top: env(safe-area-inset-top, 0px); background: var(--surf); z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
 }
-.sidebar-head h1 { font-size: 14px; font-weight: 600; }
-.sidebar-head p  { font-size: 11px; color: var(--fg3); margin-top: 2px; }
+.sidebar-head-txt h1 { font-size: 14px; font-weight: 600; }
+.sidebar-head-txt p  { font-size: 11px; color: var(--fg3); margin-top: 2px; }
+.btn-theme {
+  background: none; border: 1px solid var(--border); border-radius: 5px;
+  padding: 5px 7px; cursor: pointer; font-size: 14px; color: var(--fg2);
+  transition: all .15s; flex-shrink: 0; line-height: 1;
+}
+.btn-theme:hover { border-color: var(--acc); color: var(--acc); }
 
-.sec {
-  padding: 14px 18px 0;
-}
-.sec-label {
-  font-size: 10px; font-weight: 600; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--fg3);
-  margin-bottom: 10px;
-}
+.sec { padding: 14px 18px 0; }
+.sec-label { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--fg3); margin-bottom: 10px; }
 .field { margin-bottom: 10px; }
-.field > label {
-  display: block; font-size: 12px; font-weight: 500; color: var(--fg2);
-  margin-bottom: 4px;
-}
+.field > label { display: block; font-size: 12px; font-weight: 500; color: var(--fg2); margin-bottom: 4px; }
 .field .hint { font-size: 10px; color: var(--fg3); margin-top: 3px; }
 
 .inp-wrap { position: relative; }
-.inp-pre {
-  position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
-  font-size: 12px; color: var(--fg3); pointer-events: none;
-}
+.inp-pre { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--fg3); pointer-events: none; }
 input[type="number"], select {
-  width: 100%; background: var(--inp);
-  border: 1px solid var(--border); border-radius: 5px;
-  padding: 7px 9px; font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; color: var(--fg); outline: none;
-  -moz-appearance: textfield;
-  transition: border-color .15s;
+  width: 100%; background: var(--inp); border: 1px solid var(--border); border-radius: 5px;
+  padding: 7px 9px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg);
+  outline: none; -moz-appearance: textfield; transition: border-color .15s;
 }
 input[type="number"]:focus, select:focus { border-color: var(--acc); }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 .has-pre input { padding-left: 26px; }
 select { -webkit-appearance: none; cursor: pointer; }
-
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
 .tog-row {
   display: flex; align-items: center; gap: 8px;
   background: var(--inp); border: 1px solid var(--border);
-  border-radius: 5px; padding: 7px 10px;
-  cursor: pointer; margin-bottom: 10px;
+  border-radius: 5px; padding: 7px 10px; cursor: pointer; margin-bottom: 10px;
 }
 .tog-row span { font-size: 12px; color: var(--fg); flex: 1; }
-.tog {
-  width: 30px; height: 16px; border-radius: 8px;
-  background: var(--border); position: relative;
-  transition: background .18s; flex-shrink: 0;
-}
-.tog::after {
-  content: ''; position: absolute; top: 2px; left: 2px;
-  width: 12px; height: 12px; border-radius: 50%;
-  background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2);
-  transition: transform .18s;
-}
+.tog { width: 30px; height: 16px; border-radius: 8px; background: var(--border); position: relative; transition: background .18s; flex-shrink: 0; }
+.tog::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .18s; }
 .tog.on { background: var(--acc); }
 .tog.on::after { transform: translateX(14px); }
 
-/* Main area */
-.main {
-  flex: 1;
-  min-width: 0;
-  overflow-y: auto;
-  padding: 16px 28px 24px;
-}
-
-/* Tabs */
-.tabs {
-  display: flex; gap: 2px;
-  background: var(--border); border-radius: 7px; padding: 3px;
-  margin-bottom: 14px;
-  width: fit-content;
-}
-.tab {
-  padding: 6px 16px; border-radius: 5px; border: none;
-  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: background .15s, color .15s;
-  background: transparent; color: var(--fg2);
-}
+.main { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 28px 24px; }
+.tabs { display: flex; gap: 2px; background: var(--border); border-radius: 7px; padding: 3px; margin-bottom: 14px; width: fit-content; }
+.tab { padding: 6px 16px; border-radius: 5px; border: none; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background .15s, color .15s; background: transparent; color: var(--fg2); }
 .tab.on { background: var(--surf); color: var(--fg); box-shadow: var(--shadow); }
-
 .pane { display: none; }
 .pane.on { display: block; }
 
-/* Summary cards */
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.card {
-  background: var(--surf); border: 1px solid var(--border);
-  border-radius: 10px; padding: 22px 20px; box-shadow: var(--shadow);
-}
-.card-tag {
-  display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: .06em; text-transform: uppercase;
-  padding: 2px 7px; border-radius: 3px; margin-bottom: 10px;
-}
+.card { background: var(--surf); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; box-shadow: var(--shadow); }
+.card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; margin-bottom: 10px; }
 .tag-clt { background: var(--clt-bg); color: var(--clt); }
 .tag-pj  { background: var(--pj-bg);  color: var(--pj); }
-
-.card-val {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 28px; font-weight: 500; line-height: 1.1;
-}
+.card-val { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 500; line-height: 1.1; }
 .card-sub { font-size: 11px; color: var(--fg3); margin-top: 5px; margin-bottom: 16px; }
 hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
-
 .line { display: flex; justify-content: space-between; padding: 4px 0; }
 .line .k { font-size: 12px; color: var(--fg2); }
 .line .v { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
@@ -239,26 +149,18 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .red { color: #d04040; }
 .dim { color: var(--fg3); }
 
-/* Break-even */
-.be-box {
-  background: var(--warn-bg);
-  border: 1px solid color-mix(in srgb, var(--warn) 25%, transparent);
-  border-radius: 10px; padding: 20px 22px; margin-bottom: 20px;
-}
+.be-box { background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 25%, transparent); border-radius: 10px; padding: 20px 22px; margin-bottom: 20px; }
 .be-label { font-size: 12px; font-weight: 600; color: var(--warn); margin-bottom: 8px; }
 .be-val { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; }
 .be-sub { font-size: 12px; color: var(--fg2); margin-top: 6px; }
 
-/* Diff pill */
-.diff-bar {
-  background: var(--surf); border: 1px solid var(--border);
-  border-radius: 8px; padding: 14px 18px;
-  font-size: 13px; color: var(--fg2);
-  margin-bottom: 20px;
-}
+.diff-bar { background: var(--surf); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--fg2); margin-bottom: 20px; }
 .diff-bar strong { color: var(--fg); }
 
-/* Detail table */
+/* MEI limit warning */
+.mei-warn { display:none; margin-bottom:12px; padding:10px 14px; background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn); border-radius:6px; font-size:11px; }
+.mei-warn.show { display:flex; align-items:center; gap:4px; }
+
 .dtable { background: var(--surf); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow); }
 .dtable-head { padding: 12px 18px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--fg3); }
 .drow { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 18px; }
@@ -268,13 +170,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .dtotal { display: flex; justify-content: space-between; padding: 13px 18px; font-weight: 600; border-top: 1px solid var(--border); background: var(--surf); }
 .dtotal .v { font-family: 'JetBrains Mono', monospace; }
 
-.note {
-  font-size: 11px; color: var(--fg3); line-height: 1.65;
-  padding: 10px 12px; background: color-mix(in srgb, var(--border) 30%, transparent);
-  border-radius: 6px; margin-bottom: 16px;
-}
+.note { font-size: 11px; color: var(--fg3); line-height: 1.65; padding: 10px 12px; background: color-mix(in srgb, var(--border) 30%, transparent); border-radius: 6px; margin-bottom: 16px; }
 
-/* Mobile: stack */
 @media (max-width: 640px) {
   .wrap { flex-direction: column; height: auto; }
   .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
@@ -284,11 +181,12 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
   .tab { flex: 1; text-align: center; }
 }
 
-/* ── Cenários ─────────────────────────────────────────────────────────────── */
+/* ── Cenários ── */
 .scen-empty { text-align:center; padding:32px 16px; color:var(--fg3); font-size:12px; line-height:1.7 }
 .scen-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; min-height:20px }
 .scen-item { background:var(--surf); border:1px solid var(--border); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:border-color .15s }
 .scen-item:hover { border-color:var(--acc) }
+.scen-item.sel { border-color:var(--acc); background:color-mix(in srgb,var(--acc) 6%,var(--surf)) }
 .scen-name { font-weight:600; font-size:13px; flex:1 }
 .scen-ts   { font-size:10px; color:var(--fg3) }
 .scen-del  { background:none; border:none; color:var(--fg3); cursor:pointer; font-size:14px; padding:2px 5px; border-radius:4px; flex-shrink:0 }
@@ -299,7 +197,24 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .btn-save-scen { background:var(--acc); color:#fff; border:none; border-radius:5px; padding:8px 14px; font:600 12px 'Inter',sans-serif; cursor:pointer; white-space:nowrap }
 .btn-save-scen:hover { opacity:.85 }
 
-/* ── Dúvidas Frequentes ────────────────────────────────────────────────────── */
+/* Comparação de cenários */
+.comp-section { margin-top:20px; border-top:1px solid var(--border); padding-top:16px }
+.comp-picks { display:flex; gap:8px; margin-bottom:12px; align-items:center }
+.comp-pick-sel { flex:1; background:var(--inp); border:1px solid var(--border); border-radius:5px; padding:7px 10px; font:12px 'JetBrains Mono',monospace; color:var(--fg); outline:none; cursor:pointer }
+.comp-pick-sel:focus { border-color:var(--acc) }
+.btn-comp { background:var(--acc); color:#fff; border:none; border-radius:5px; padding:8px 14px; font:600 12px 'Inter',sans-serif; cursor:pointer; white-space:nowrap }
+.btn-comp:hover { opacity:.85 }
+.comp-table { background:var(--surf); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:16px }
+.comp-hdr { display:grid; grid-template-columns:1fr 1fr 1fr; background:var(--bg); border-bottom:1px solid var(--border) }
+.comp-hdr > div { padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--fg3) }
+.comp-row { display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid var(--border) }
+.comp-row:last-child { border-bottom:none }
+.comp-row:nth-child(even) { background:color-mix(in srgb,var(--border) 25%,transparent) }
+.comp-row > div { padding:9px 14px; font-size:12px }
+.comp-row > div:nth-child(2), .comp-row > div:nth-child(3) { font-family:'JetBrains Mono',monospace }
+.comp-winner { font-weight:700; color:var(--clt) }
+
+/* ── FAQ ── */
 .faq-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap }
 .faq-search-wrap { flex:1; min-width:180px; position:relative }
 .faq-search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--fg3); pointer-events:none }
@@ -321,7 +236,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .faq-tag { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-weight:700; margin-right:6px }
 .faq-empty { text-align:center; padding:32px 16px; color:var(--fg3); font-size:12px }
 
-/* ── Análise IA ────────────────────────────────────────────────────────────── */
+/* ── Análise IA ── */
 .ia-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px }
 .ia-head h2 { font-size:15px; font-weight:700 }
 .btn-cfg-open { background:var(--inp); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font:500 12px 'Inter',sans-serif; color:var(--fg2); cursor:pointer; display:flex; align-items:center; gap:5px; transition:all .15s }
@@ -350,7 +265,6 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .loading-dots span:nth-child(2) { animation-delay:.15s }
 .loading-dots span:nth-child(3) { animation-delay:.3s }
 @keyframes dot-b { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
-/* ── Modal de configuração IA ─────── */
 .cfg-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:none; align-items:center; justify-content:center; padding:16px }
 .cfg-overlay.open { display:flex }
 .cfg-modal { background:var(--surf); border-radius:14px; width:100%; max-width:560px; max-height:calc(100dvh - 32px); overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.3); display:flex; flex-direction:column }
@@ -378,12 +292,13 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 </style>
 
 <div class="wrap">
-
-  <!-- ══ SIDEBAR ══ -->
   <aside class="sidebar">
     <div class="sidebar-head">
-      <h1>CLT vs PJ</h1>
-      <p>Calculadora de remuneração líquida</p>
+      <div class="sidebar-head-txt">
+        <h1>CLT vs PJ</h1>
+        <p>Calculadora de remuneração líquida</p>
+      </div>
+      <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Alternar tema">🌙</button>
     </div>
 
     <div class="sec">
@@ -392,7 +307,6 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <label>Bruto mensal</label>
         <div class="inp-wrap has-pre">
           <span class="inp-pre">R$</span>
-          <!-- FIX: placeholder em vez de value="0" para não precisar apagar antes de digitar -->
           <input type="number" id="bruto" placeholder="0" min="0" step="100">
         </div>
       </div>
@@ -403,15 +317,13 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="row2">
         <div class="field">
           <label>VA (alimentação)</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="va" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>VR (refeição)</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="vr" placeholder="0" min="0" step="50">
           </div>
         </div>
@@ -419,16 +331,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="row2">
         <div class="field">
           <label>VA+VR (flex)</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="vavr" placeholder="0" min="0" step="50">
           </div>
-          <div class="hint">Quando alimentação e refeição vêm juntos</div>
+          <div class="hint">Alimentação e refeição juntos</div>
         </div>
         <div class="field">
           <label>Home office</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="home" placeholder="0" min="0" step="50">
           </div>
         </div>
@@ -445,11 +355,10 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div id="wrap-saude">
         <div class="field">
           <label>Valor estimado do plano (mês)</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="saude" placeholder="0" min="0" step="50">
           </div>
-          <div class="hint">Benefício que CLT inclui; PJ precisa contratar por conta</div>
+          <div class="hint">Benefício que CLT inclui; PJ contrata por conta</div>
         </div>
       </div>
     </div>
@@ -458,8 +367,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="sec-label">Configuração PJ</div>
       <div class="field">
         <label>Nota fiscal mensal</label>
-        <div class="inp-wrap has-pre">
-          <span class="inp-pre">R$</span>
+        <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
           <input type="number" id="nf" placeholder="0" min="0" step="500">
         </div>
       </div>
@@ -485,7 +393,6 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
       <div class="field" id="wrap-aliq" hidden>
         <label>Alíquota efetiva (%)</label>
-        <!-- aliq mantém value pois é preenchido automaticamente ao trocar regime -->
         <input type="number" id="aliq" value="6" min="0.1" max="50" step="0.5">
         <div class="hint" id="aliq-hint"></div>
       </div>
@@ -496,39 +403,34 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="row2">
         <div class="field">
           <label>Contador</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="contador" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>Plano saúde</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="saudePJ" placeholder="0" min="0" step="50">
           </div>
         </div>
       </div>
       <div class="field">
         <label>INSS próprio</label>
-        <div class="inp-wrap has-pre">
-          <span class="inp-pre">R$</span>
+        <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
           <input type="number" id="inssPJ" placeholder="0" min="0" step="50">
         </div>
-        <div class="hint">Autônomo: ~20% s/ sal. contribuição (teto ~R$1.794)</div>
+        <div class="hint" id="inss-hint">Autônomo: ~20% s/ sal. contribuição (teto ~R$1.794)</div>
       </div>
       <div class="row2">
         <div class="field">
           <label>Provisão FGTS</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="fgtsProv" placeholder="0" min="0" step="50">
           </div>
         </div>
         <div class="field">
           <label>Outros</label>
-          <div class="inp-wrap has-pre">
-            <span class="inp-pre">R$</span>
+          <div class="inp-wrap has-pre"><span class="inp-pre">R$</span>
             <input type="number" id="outros" placeholder="0" min="0" step="50">
           </div>
         </div>
@@ -537,17 +439,21 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
     <div class="sec" style="padding-bottom:16px">
       <button class="btn-pdf" onclick="window.print()">⬇ Exportar PDF</button>
+      <button class="btn-share" id="btn-share" onclick="shareURL()">🔗 Copiar link do cenário</button>
     </div>
   </aside>
 
-  <!-- ══ MAIN ══ -->
   <main class="main">
-
     <div class="review-banner" id="review-banner">
       ⚠️ As tabelas desta calculadora são de <strong id="review-year">2026</strong>. Em janeiro de cada ano, verifique se INSS, IRRF e DAS MEI foram atualizados.
     </div>
     <div class="review-banner" id="new-year-banner" hidden style="cursor:pointer" onclick="document.getElementById('new-year-banner').hidden=true">
-      🗓️ <strong>Início de ano detectado.</strong> Verifique e atualize: <strong>tabela INSS</strong>, <strong>tabela IRRF</strong>, <strong>DAS MEI</strong> e <strong>limite MEI</strong>. Clique para fechar.
+      🗓️ <strong>Início de ano detectado.</strong> Verifique e atualize: tabela INSS, tabela IRRF, DAS MEI e limite MEI. Clique para fechar.
+    </div>
+
+    <!-- MEI limit warning -->
+    <div class="mei-warn" id="mei-warn">
+      ⚠️ <strong>Limite MEI ultrapassado:</strong> <span id="mei-warn-txt"></span>
     </div>
 
     <div class="tabs">
@@ -590,9 +496,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
           <div class="line"><span class="k">Férias (custo oport.)</span><span class="v red" id="p-feropp">—</span></div>
         </div>
       </div>
-
       <div class="diff-bar" id="diff-bar">—</div>
-
       <div class="be-box">
         <div class="be-label">Ponto de equilíbrio — NF mínima para empatar CLT</div>
         <div class="be-val" id="be-val">—</div>
@@ -636,11 +540,11 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <div class="dtable-head">Faturamento e impostos</div>
         <div class="drow"><span class="k">Nota fiscal</span><span class="v" id="p-d-nf">—</span></div>
         <div class="drow"><span class="k red">Impostos</span><span class="v red" id="p-d-imp">—</span></div>
-        <div class="drow"><span class="k red">Contador</span><span class="v red" id="p-d-cnt">—</span></div>
+        <div class="drow"><span class="k red" id="p-d-cnt-lbl">Contador</span><span class="v red" id="p-d-cnt">—</span></div>
       </div>
       <div class="dtable">
         <div class="dtable-head">Despesas que CLT cobre automaticamente</div>
-        <div class="drow"><span class="k red">INSS contribuição</span><span class="v red" id="p-d-inss">—</span></div>
+        <div class="drow"><span class="k red" id="p-d-inss-lbl">INSS contribuição</span><span class="v red" id="p-d-inss">—</span></div>
         <div class="drow"><span class="k red">Plano de saúde</span><span class="v red" id="p-d-sau">—</span></div>
         <div class="drow"><span class="k red">Provisão FGTS</span><span class="v red" id="p-d-fgt">—</span></div>
         <div class="drow"><span class="k red">Férias não remuneradas ÷ 12</span><span class="v red" id="p-d-fer">—</span></div>
@@ -656,8 +560,9 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
         <div class="drow"><span class="k">Autônomo / RPA</span><span class="v dim">INSS 11% + IRRF retido na fonte pelo contratante</span></div>
       </div>
       <div class="note">
-        <strong>Simples Anexo III vs V:</strong> depende do fator R (folha/faturamento). Folha ≥ 28% do faturamento → Anexo III (menor carga). Consulte um contador.<br>
-        <strong>INSS PJ 2026:</strong> autônomo recolhe 20% entre o mínimo (R$1.621) e o teto (R$8.476). Contribuindo sobre o teto: ~R$1.695/mês. Contribuindo sobre o mínimo: ~R$324/mês.
+        <strong>Simples Anexo III vs V:</strong> depende do fator R (folha/faturamento). Folha ≥ 28% → Anexo III. Consulte um contador.<br>
+        <strong>INSS PJ 2026:</strong> autônomo recolhe 20% entre o mínimo (R$1.621) e o teto (R$8.476). Sobre o teto: ~R$1.695/mês. Sobre o mínimo: ~R$324/mês.<br>
+        <strong>RPA:</strong> INSS 11% e IRRF são retidos pelo contratante. Os campos são calculados automaticamente ao selecionar Autônomo/RPA.
       </div>
     </div>
 
@@ -666,10 +571,22 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="dtable-head" style="background:none;padding:0 0 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3)">Cenários salvos</div>
       <div id="scen-list" class="scen-list"></div>
       <div class="save-scen-row">
-        <input class="save-scen-inp" id="scen-name" type="text" placeholder="Nome do cenário — ex: Proposta A, Empresa X, Freelance…" maxlength="40">
+        <input class="save-scen-inp" id="scen-name" type="text" placeholder="Nome do cenário — ex: Proposta A, Empresa X…" maxlength="40">
         <button class="btn-save-scen" onclick="saveScen()">💾 Salvar</button>
       </div>
-      <div class="note">Até 5 cenários guardados no navegador. Clique num cenário para carregar os dados.</div>
+      <div class="note">Até 5 cenários guardados no navegador. Clique num cenário para carregar.</div>
+
+      <!-- Comparação lado a lado -->
+      <div class="comp-section" id="comp-section" style="display:none">
+        <div class="sec-label" style="margin-bottom:12px">Comparar dois cenários</div>
+        <div class="comp-picks">
+          <select class="comp-pick-sel" id="comp-a"></select>
+          <span style="color:var(--fg3);font-size:12px">vs</span>
+          <select class="comp-pick-sel" id="comp-b"></select>
+          <button class="btn-comp" onclick="renderComp()">Comparar</button>
+        </div>
+        <div id="comp-result"></div>
+      </div>
     </div>
 
     <!-- Dúvidas Frequentes -->
@@ -710,14 +627,11 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
     </div>
 
-    <!-- Modal de configuração IA -->
+    <!-- Modal IA -->
     <div class="cfg-overlay" id="cfgOverlay" onclick="overlayClose(event)">
       <div class="cfg-modal">
         <div class="cfg-modal-hdr">
-          <div>
-            <h2>Configurar IA</h2>
-            <p>As chaves ficam só no seu navegador — nunca são enviadas para outro servidor.</p>
-          </div>
+          <div><h2>Configurar IA</h2><p>As chaves ficam só no seu navegador — nunca são enviadas para outro servidor.</p></div>
           <button class="cfg-close" onclick="closeCfg()">✕</button>
         </div>
         <div class="cfg-modal-body">
@@ -726,69 +640,125 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
             <button class="cfg-tab" id="ctab-claude" onclick="setCfgTab('claude')">🟠 Claude</button>
             <button class="cfg-tab" id="ctab-openai" onclick="setCfgTab('openai')">🟢 OpenAI</button>
           </div>
-          <!-- Gemini -->
           <div class="cfg-panel on" id="cpanel-gemini">
-            <div class="cfg-field">
-              <label>Chave API Gemini (gratuita)</label>
-              <input class="cfg-inp" id="key-gemini" type="password" placeholder="AIza…">
-            </div>
-            <div class="cfg-note">Obtenha gratuitamente em <a class="cfg-link" href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> → Get API Key. Cota gratuita generosa para uso pessoal.</div>
+            <div class="cfg-field"><label>Chave API Gemini (gratuita)</label><input class="cfg-inp" id="key-gemini" type="password" placeholder="AIza…"></div>
+            <div class="cfg-note">Obtenha gratuitamente em <a class="cfg-link" href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> → Get API Key.</div>
             <button class="btn-cfg-save" onclick="saveCfgKey('gemini')">Salvar chave Gemini</button>
           </div>
-          <!-- Claude -->
           <div class="cfg-panel" id="cpanel-claude">
-            <div class="cfg-field">
-              <label>Chave API Anthropic (Claude)</label>
-              <input class="cfg-inp" id="key-claude" type="password" placeholder="sk-ant-…">
-            </div>
-            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Tem custo por uso (pay-as-you-go).</div>
+            <div class="cfg-field"><label>Chave API Anthropic (Claude)</label><input class="cfg-inp" id="key-claude" type="password" placeholder="sk-ant-…"></div>
+            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Custo pay-as-you-go.</div>
             <button class="btn-cfg-save" onclick="saveCfgKey('claude')">Salvar chave Claude</button>
           </div>
-          <!-- OpenAI -->
           <div class="cfg-panel" id="cpanel-openai">
-            <div class="cfg-field">
-              <label>Chave API OpenAI</label>
-              <input class="cfg-inp" id="key-openai" type="password" placeholder="sk-…">
-            </div>
-            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>. Custo estimado: ~US$0,01–0,03 por análise.</div>
+            <div class="cfg-field"><label>Chave API OpenAI</label><input class="cfg-inp" id="key-openai" type="password" placeholder="sk-…"></div>
+            <div class="cfg-note">Crie sua chave em <a class="cfg-link" href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>. ~US$0,01–0,03/análise.</div>
             <button class="btn-cfg-save" onclick="saveCfgKey('openai')">Salvar chave OpenAI</button>
           </div>
         </div>
       </div>
     </div>
-
   </main>
 </div>
 
 <script>
 let plano = true;
-
-// ── Tabelas por ano ──────────────────────────────────────────────────────────
 const ANO = new Date().getFullYear();
 
-// Limite de faturamento anual MEI
+// ── Tema ──────────────────────────────────────────────────────────────────────
+(function initTheme() {
+  const saved = localStorage.getItem('clt_theme');
+  if (saved) document.documentElement.dataset.theme = saved;
+  updateThemeBtn();
+})();
+
+function updateThemeBtn() {
+  const root = document.documentElement;
+  const dark = root.dataset.theme === 'dark' ||
+    (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const btn = document.getElementById('btn-theme');
+  if (btn) btn.textContent = dark ? '☀️' : '🌙';
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const dark = root.dataset.theme === 'dark' ||
+    (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = dark ? 'light' : 'dark';
+  root.dataset.theme = next;
+  localStorage.setItem('clt_theme', next);
+  updateThemeBtn();
+}
+
+// ── URL sharing ───────────────────────────────────────────────────────────────
+const URL_KEYS = {
+  b:'bruto', va:'va', vr:'vr', vavr:'vavr', ho:'home',
+  plr:'plr', sa:'saude', nf:'nf', al:'aliq',
+  cn:'contador', sp:'saudePJ', ip:'inssPJ', fp:'fgtsProv', ou:'outros'
+};
+
+function encodeState() {
+  const p = new URLSearchParams();
+  for (const [k, id] of Object.entries(URL_KEYS)) {
+    const v = document.getElementById(id)?.value;
+    if (v && v !== '0' && v !== '') p.set(k, v);
+  }
+  p.set('re', document.getElementById('regime').value);
+  p.set('ma', document.getElementById('mei-ativ').value);
+  p.set('pl', plano ? '1' : '0');
+  return '#' + p.toString();
+}
+
+function decodeState() {
+  if (!location.hash || location.hash.length < 2) return;
+  try {
+    const p = new URLSearchParams(location.hash.slice(1));
+    for (const [k, id] of Object.entries(URL_KEYS)) {
+      if (p.has(k)) { const el = document.getElementById(id); if (el) el.value = p.get(k); }
+    }
+    if (p.has('re')) { document.getElementById('regime').value = p.get('re'); }
+    if (p.has('ma')) { document.getElementById('mei-ativ').value = p.get('ma'); }
+    if (p.has('pl') && p.get('pl') !== (plano ? '1' : '0')) togPlano();
+  } catch(e) {}
+}
+
+let hashTimer;
+function scheduleHashUpdate() {
+  clearTimeout(hashTimer);
+  hashTimer = setTimeout(() => { history.replaceState(null, '', encodeState()); }, 400);
+}
+
+function shareURL() {
+  history.replaceState(null, '', encodeState());
+  const url = location.href;
+  const btn = document.getElementById('btn-share');
+  navigator.clipboard?.writeText(url).then(() => {
+    btn.textContent = '✅ Link copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '🔗 Copiar link do cenário'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    prompt('Copie o link:', url);
+  });
+}
+
+// ── MEI limite ────────────────────────────────────────────────────────────────
 function meiLimite() {
   if (ANO >= 2028) return 140000;
   if (ANO >= 2027) return 110000;
-  return 81000; // 2026 e anteriores
+  return 81000;
 }
 
-// Detecta início de ano (jan/fev) para mostrar banner de revisão
 (function initAnoNovo() {
-  const m = new Date().getMonth(); // 0=jan, 1=fev
-  if (m <= 1) {
-    document.getElementById('new-year-banner').hidden = false;
-  }
-  // Atualiza label do dropdown MEI
+  const m = new Date().getMonth();
+  if (m <= 1) document.getElementById('new-year-banner').hidden = false;
   const lim = meiLimite();
   const limK = lim >= 1000 ? (lim/1000)+'k' : lim;
   const el = document.getElementById('opt-mei');
   if (el) el.textContent = `MEI (até R$ ${limK}/ano${ANO>=2027?' — atualizado':''}${ANO>=2028?' — 2028+':''})`;
-  // Atualiza hint da tabela de referência
   const hint = document.getElementById('mei-ref-hint');
   if (hint) {
-    const proximoAviso = ANO < 2027 ? ' · R$ 110k em 2027 · R$ 140k a partir de 2028' : ANO===2027 ? ' · R$ 140k a partir de 2028' : '';
-    hint.textContent = `DAS fixo ${ANO}: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ ${limK}/ano${proximoAviso}`;
+    const prox = ANO < 2027 ? ' · R$ 110k em 2027 · R$ 140k a partir de 2028' : ANO===2027 ? ' · R$ 140k a partir de 2028' : '';
+    hint.textContent = `DAS fixo ${ANO}: R$ 86,05 serviços · R$ 82,05 comércio · R$ 87,05 ambos · limite R$ ${limK}/ano${prox}`;
   }
 })();
 
@@ -798,8 +768,9 @@ function togPlano() {
   document.getElementById('wrap-saude').hidden = !plano;
   calc();
 }
+
 const REGIME_INFO = {
-  mei:    { aliq: null,  hint: 'DAS fixo 2026 — valor varia por atividade (serviços R$ 86,05 · comércio R$ 82,05)' },
+  mei:    { aliq: null,  hint: 'DAS fixo — valor varia por atividade (serviços R$ 86,05 · comércio R$ 82,05)' },
   sn3:    { aliq: 0.06,  hint: 'Simples Anexo III: 6% na 1ª faixa, sobe até 14%' },
   sn5:    { aliq: 0.155, hint: 'Simples Anexo V: 15,5% na 1ª faixa, sobe até 30%' },
   lp:     { aliq: 0.134, hint: 'Lucro Presumido: ~13,4% (ISS 2% + PIS 0,65% + COFINS 3% + IRPJ 4,8% + CSLL 2,88%)' },
@@ -817,12 +788,22 @@ function updRegime() {
     document.getElementById('aliq').value = (info.aliq * 100).toFixed(1);
   }
   document.getElementById('aliq-hint').textContent = info.hint;
-  // RPA: sugerir INSS
+
+  // RPA: pre-preenche INSS mínimo e explica o cálculo
+  const inssHint = document.getElementById('inss-hint');
   if (r === 'rpa') {
-    document.getElementById('inssPJ').value = 324; // ~mínimo 2026
+    document.getElementById('inssPJ').value = '';
+    document.getElementById('inssPJ').placeholder = 'calculado';
+    document.getElementById('inssPJ').readOnly = true;
+    if (inssHint) inssHint.textContent = 'RPA: 11% da NF retido pelo contratante (mín. R$178 · máx. R$932) — calculado automaticamente';
+  } else {
+    document.getElementById('inssPJ').readOnly = false;
+    document.getElementById('inssPJ').placeholder = '0';
+    if (inssHint) inssHint.textContent = 'Autônomo: ~20% s/ sal. contribuição (teto ~R$1.794)';
   }
   calc();
 }
+
 function tab(name) {
   document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('on', ['comp','clt','pj','scen','faq','ia'][i]===name));
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id==='pane-'+name));
@@ -830,25 +811,22 @@ function tab(name) {
   if (name==='faq')  renderFAQ();
 }
 
-const R = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const R   = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const neg = n => n>0 ? '− '+R(n) : R(0);
 const pos = n => n>0 ? '+ '+R(n) : R(0);
 
-// INSS — tabelas progressivas por ano
+// ── INSS ──────────────────────────────────────────────────────────────────────
 const INSS_TABELAS = {
   2026: [[0,1621,.075],[1621,2902.84,.09],[2902.84,4354.27,.12],[4354.27,8475.55,.14]],
-  // 2027: aguardando publicação oficial (normalmente janeiro)
 };
 function inss(b) {
   const tb = INSS_TABELAS[ANO] || INSS_TABELAS[2026];
   let v=0; for(const[a,f,r] of tb){ if(b<=a)break; v+=(Math.min(b,f)-a)*r; } return v;
 }
 
-// IRRF — tabelas por ano
-// 2026: Lei 15.191/2025 + redução Lei 15.270/2025 (isento efetivo até R$5.000)
+// ── IRRF ──────────────────────────────────────────────────────────────────────
 const IRRF_TABELAS = {
   2026: { tb:[[2428.80,2826.65,.075,182.16],[2826.65,3751.05,.15,394.16],[3751.05,4664.68,.225,675.49],[4664.68,Infinity,.275,908.73]], isento:2428.80, redMax:5000, redLim:7350, redK:978.62, redR:0.133145 },
-  // 2027: aguardando publicação oficial
 };
 function irrf(base) {
   const cfg = IRRF_TABELAS[ANO] || IRRF_TABELAS[2026];
@@ -862,6 +840,7 @@ function irrf(base) {
   return Math.max(0, imp - Math.max(0, red));
 }
 
+// ── Cálculo principal ─────────────────────────────────────────────────────────
 function calc() {
   const bruto   = +document.getElementById('bruto').value||0;
   const va      = (+document.getElementById('va').value||0) + (+document.getElementById('vr').value||0) + (+document.getElementById('vavr').value||0);
@@ -873,68 +852,84 @@ function calc() {
   const aliq    = +document.getElementById('aliq').value/100||0.06;
   const cnt     = +document.getElementById('contador').value||0;
   const saudPJ  = +document.getElementById('saudePJ').value||0;
-  const inssPJ  = +document.getElementById('inssPJ').value||0;
   const fgtsPrv = +document.getElementById('fgtsProv').value||0;
   const outros  = +document.getElementById('outros').value||0;
 
-  // ── CLT ──────────────────────────────────────────────────────────────────
-  const ins   = inss(bruto);
-  const ir    = irrf(bruto - ins);
-  const liq   = bruto - ins - ir;
-  const dec   = liq / 12;
-
-  // FIX: ⅓ constitucional é isento de INSS e de IRRF (IN RFB 971/2009 · art. 7° CF)
-  // INSS incide só sobre o salário base; IRRF também só sobre (base − INSS)
+  // ── CLT ──
+  const ins  = inss(bruto);
+  const ir   = irrf(bruto - ins);
+  const liq  = bruto - ins - ir;
+  const dec  = liq / 12;
+  // ⅓ constitucional isento de INSS e IRRF (IN RFB 971/2009 · art. 7° CF)
   const ferINSS = inss(bruto);
   const ferIR   = irrf(bruto - ferINSS);
-  const ferLiq  = bruto - ferINSS - ferIR + bruto / 3; // 1/3 entra líquido, sem tributação
+  const ferLiq  = bruto - ferINSS - ferIR + bruto / 3;
   const fer     = ferLiq / 12;
+  const fgt     = bruto * .08;
+  const plrM    = liq * plrSal / 12;
+  const cltTot  = liq + dec + fer + fgt + va + hm + plrM + saud;
 
-  const fgt   = bruto * .08;
-  const plrM  = liq * plrSal / 12;
-  const cltTot= liq + dec + fer + fgt + va + hm + plrM + saud;
+  // ── PJ ──
+  let impPJ, inssPJ;
+  if (regime === 'mei') {
+    impPJ  = +document.getElementById('mei-ativ').value;
+    inssPJ = +document.getElementById('inssPJ').value||0;
+  } else if (regime === 'rpa') {
+    // INSS 11% retido pelo tomador, limitado ao teto
+    inssPJ = Math.min(nf * 0.11, 8475.55 * 0.11);
+    impPJ  = irrf(nf - inssPJ); // IRRF retido na fonte
+    // Exibe o valor calculado no campo (read-only)
+    const inssEl = document.getElementById('inssPJ');
+    if (inssEl) inssEl.value = inssPJ > 0 ? inssPJ.toFixed(0) : '';
+  } else {
+    impPJ  = nf * aliq;
+    inssPJ = +document.getElementById('inssPJ').value||0;
+  }
 
-  // ── PJ ───────────────────────────────────────────────────────────────────
-  let impPJ;
-  if (regime === 'mei')      impPJ = +document.getElementById('mei-ativ').value;
-  else if (regime === 'rpa') impPJ = 0; // INSS e IR retidos na fonte (difícil isolar)
-  else                       impPJ = nf * aliq;
+  // MEI limit warning
+  const meiWarn = document.getElementById('mei-warn');
+  if (regime === 'mei' && nf * 12 > meiLimite()) {
+    const limK = meiLimite()/1000;
+    const fatAnual = R(nf * 12);
+    document.getElementById('mei-warn-txt').textContent =
+      `faturamento anual estimado de ${fatAnual} ultrapassa o limite MEI de R$ ${limK}k. Considere migrar para Simples Nacional.`;
+    meiWarn.classList.add('show');
+  } else {
+    meiWarn.classList.remove('show');
+  }
 
-  // FIX: custo de oportunidade das férias baseado na NF (1 mês perdido ÷ 12)
-  // Antes usava liq (salário CLT líquido), que é grandeza errada para o PJ
   const ferOpp = nf / 12;
-
-  // FIX: ferOpp agora entra em pjDesp → pjLiq já reflete o custo de férias,
-  // ficando consistente com o break-even que também inclui a provisão de férias
   const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros + ferOpp;
   const pjLiq  = nf - pjDesp;
 
-  // ── Break-even iterativo ──────────────────────────────────────────────────
+  // Break-even
   let beNF = cltTot;
   for(let i=0;i<60;i++){
-    let imp2;
-    if (regime==='mei')      imp2 = +document.getElementById('mei-ativ').value;
-    else if (regime==='rpa') imp2 = 0;
-    else                     imp2 = beNF * aliq;
-    // FIX: fer2 baseado na própria NF estimada (beNF), não no líquido PJ
+    let imp2, inss2;
+    if (regime==='mei') {
+      imp2  = +document.getElementById('mei-ativ').value;
+      inss2 = +document.getElementById('inssPJ').value||0;
+    } else if (regime==='rpa') {
+      inss2 = Math.min(beNF * 0.11, 8475.55 * 0.11);
+      imp2  = irrf(beNF - inss2);
+    } else {
+      imp2  = beNF * aliq;
+      inss2 = +document.getElementById('inssPJ').value||0;
+    }
     const fer2 = beNF / 12;
-    beNF = cltTot + imp2 + cnt + saudPJ + inssPJ + fgtsPrv + outros + fer2;
+    beNF = cltTot + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + fer2;
   }
 
-  // ── DOM ──────────────────────────────────────────────────────────────────
-  // Comparativo
-  s('c-clt-total', R(cltTot));
-  s('c-pj-total', R(pjLiq));
+  // ── DOM ──
+  s('c-clt-total', R(cltTot)); s('c-pj-total', R(pjLiq));
   s('c-liq', R(liq)); s('c-13', pos(dec)); s('c-fer', pos(fer));
   s('c-fgt', pos(fgt)); s('c-bens', pos(va+hm)); s('c-plr', pos(plrM)); s('c-sau', pos(saud));
   s('p-nf', R(nf)); s('p-imp', neg(impPJ)); s('p-cnt', neg(cnt));
   s('p-inss', neg(inssPJ)); s('p-sau', neg(saudPJ)); s('p-fgt', neg(fgtsPrv)); s('p-out', neg(outros)); s('p-feropp', neg(ferOpp));
 
   const diff = pjLiq - cltTot;
-  const sign = diff>=0 ? '▲' : '▼';
-  const abs  = Math.abs(diff);
   document.getElementById('diff-bar').innerHTML =
-    `${sign} PJ <strong>${diff>=0?'paga mais':'paga menos'} ${R(abs)}/mês</strong> que CLT no cenário atual.`;
+    `${diff>=0?'▲':'▼'} PJ <strong>${diff>=0?'paga mais':'paga menos'} ${R(Math.abs(diff))}/mês</strong> que CLT no cenário atual.`;
 
   s('be-val', R(beNF)+'/mês');
   const gap = beNF - nf;
@@ -942,28 +937,87 @@ function calc() {
     ? `NF atual ${R(nf)} está ${R(gap)} abaixo — ainda não compensa`
     : `NF atual ${R(nf)} está ${R(Math.abs(gap))} acima — PJ compensa`);
 
-  // CLT detail
   s('d-bruto', R(bruto)); s('d-inss', neg(ins)); s('d-irrf', neg(ir)); s('d-liq', R(liq));
   s('d-bens', pos(va+hm)); s('d-saud', pos(saud));
   s('d-13', pos(dec)); s('d-fer', pos(fer)); s('d-fgt', pos(fgt)); s('d-plr', pos(plrM));
   s('d-total', R(cltTot));
 
-  // PJ detail
   s('p-d-nf', R(nf)); s('p-d-imp', neg(impPJ)); s('p-d-cnt', neg(cnt));
   s('p-d-inss', neg(inssPJ)); s('p-d-sau', neg(saudPJ)); s('p-d-fgt', neg(fgtsPrv)); s('p-d-fer', neg(ferOpp)); s('p-d-out', neg(outros));
   s('p-d-liq', R(pjLiq));
+
+  scheduleHashUpdate();
 }
 
 function s(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
 
-document.getElementById('review-year').textContent = ANO;
-document.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',calc); el.addEventListener('change',calc); });
+// ── Função de cálculo para dados externos (comparação de cenários) ─────────
+function calcForData(d) {
+  const bruto   = +d.bruto||0;
+  const va      = (+d.va||0) + (+d.vr||0) + (+d.vavr||0);
+  const hm      = +d.home||0;
+  const plrSal  = +d.plr||0;
+  const saud    = (d.plano !== false && d.plano !== '0') ? (+d.saude||0) : 0;
+  const nf      = +d.nf||0;
+  const regime  = d.regime||'mei';
+  const aliq    = +d.aliq/100||0.06;
+  const cnt     = +d.contador||0;
+  const saudPJ  = +d.saudePJ||0;
+  const fgtsPrv = +d.fgtsProv||0;
+  const outros  = +d.outros||0;
 
-// FIX: seleciona todo o conteúdo ao focar — não precisa apagar antes de digitar
+  const ins  = inss(bruto);
+  const ir   = irrf(bruto - ins);
+  const liq  = bruto - ins - ir;
+  const dec  = liq / 12;
+  const ferINSS = inss(bruto);
+  const ferIR   = irrf(bruto - ferINSS);
+  const ferLiq  = bruto - ferINSS - ferIR + bruto / 3;
+  const fer     = ferLiq / 12;
+  const fgt     = bruto * .08;
+  const plrM    = liq * plrSal / 12;
+  const cltTot  = liq + dec + fer + fgt + va + hm + plrM + saud;
+
+  let impPJ, inssPJ;
+  if (regime === 'mei') {
+    impPJ  = +d['mei-ativ']||86.05;
+    inssPJ = +d.inssPJ||0;
+  } else if (regime === 'rpa') {
+    inssPJ = Math.min(nf * 0.11, 8475.55 * 0.11);
+    impPJ  = irrf(nf - inssPJ);
+  } else {
+    impPJ  = nf * aliq;
+    inssPJ = +d.inssPJ||0;
+  }
+
+  const ferOpp = nf / 12;
+  const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros + ferOpp;
+  const pjLiq  = nf - pjDesp;
+
+  let beNF = cltTot;
+  for(let i=0;i<60;i++){
+    let imp2, inss2;
+    if (regime==='mei') { imp2=+d['mei-ativ']||86.05; inss2=+d.inssPJ||0; }
+    else if (regime==='rpa') { inss2=Math.min(beNF*.11,8475.55*.11); imp2=irrf(beNF-inss2); }
+    else { imp2=beNF*aliq; inss2=+d.inssPJ||0; }
+    beNF = cltTot + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + beNF/12;
+  }
+
+  const RL = {mei:'MEI',sn3:'Simples III',sn5:'Simples V',lp:'Lucro Presumido',rpa:'RPA',custom:'Personalizado'};
+  return { cltTot, pjLiq, beNF, bruto, nf, regime: RL[regime]||regime };
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.getElementById('review-year').textContent = ANO;
+document.querySelectorAll('input,select').forEach(el => {
+  el.addEventListener('input', calc);
+  el.addEventListener('change', calc);
+});
 document.querySelectorAll('input[type="number"]').forEach(el => {
   el.addEventListener('focus', () => el.select());
 });
 
+decodeState();
 updRegime();
 calc();
 
@@ -971,22 +1025,28 @@ calc();
 const FAQ_DATA = [
   { tag:'Geral', tc:'#555', tb:'#f0f0f0',
     q:'O que é o "ponto de equilíbrio" e como usar?',
-    a:'É a <strong>nota fiscal mínima</strong> que o PJ precisa emitir para que o líquido mensal seja igual ao pacote total CLT. Se sua NF está abaixo desse valor, a CLT compensa mais. Se está acima, o PJ já supera. O cálculo é iterativo (60 iterações) porque as despesas fixas do PJ (impostos, contador, saúde…) dependem do próprio valor da NF.' },
+    a:'É a <strong>nota fiscal mínima</strong> que o PJ precisa emitir para que o líquido mensal seja igual ao pacote total CLT. Se sua NF está abaixo, a CLT compensa mais. Se está acima, o PJ já supera. O cálculo é iterativo porque as despesas do PJ dependem do próprio valor da NF.' },
   { tag:'CLT', tc:'var(--clt)', tb:'var(--clt-bg)',
     q:'O que entra no "líquido mensal médio CLT"?',
-    a:'<strong>Salário líquido</strong> (bruto − INSS − IRRF) mais as parcelas mensais de: <strong>13º salário</strong> (÷12), <strong>férias + ⅓</strong> (÷12), <strong>FGTS 8%</strong> (÷12), <strong>PLR</strong> (÷12), VA/VR + home office e <strong>plano de saúde</strong> pago pela empresa. O FGTS não cai no bolso todo mês, mas compõe o pacote total disponível em demissão sem justa causa + multa de 40%.' },
+    a:'<strong>Salário líquido</strong> (bruto − INSS − IRRF) mais parcelas mensais de: <strong>13º</strong> (÷12), <strong>férias + ⅓</strong> (÷12), <strong>FGTS 8%</strong> (÷12), <strong>PLR</strong> (÷12), VA/VR + home office e <strong>plano de saúde</strong> da empresa. FGTS fica disponível em demissão sem justa causa + multa de 40%.' },
   { tag:'CLT', tc:'var(--clt)', tb:'var(--clt-bg)',
     q:'Como as férias entram no comparativo?',
-    a:'No CLT: 1 salário bruto + ⅓ constitucional (o ⅓ é isento de INSS e IRRF por lei), dividido por 12 — entra como crédito mensal médio. No PJ: não há férias remuneradas. A calculadora desconta <strong>1/12 da NF mensal</strong> como custo de oportunidade — esse mês parado sem faturar precisa ser provisionado.' },
+    a:'No CLT: bruto + ⅓ constitucional (isento de INSS e IRRF por lei — IN RFB 971/2009), dividido por 12. No PJ: a calculadora desconta <strong>1/12 da NF</strong> como custo de oportunidade — o mês parado sem faturar precisa ser provisionado. Os dois lados usam a mesma lógica no ponto de equilíbrio.' },
+  { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
+    q:'O que é RPA e como funciona nesta calculadora?',
+    a:'RPA (Recibo de Pagamento a Autônomo) é quando você presta serviço sem abrir empresa. O contratante retém <strong>INSS de 11%</strong> (limitado ao teto) e o <strong>IRRF</strong> calculado sobre a NF menos o INSS. A calculadora calcula os dois automaticamente ao selecionar "Autônomo / RPA", sem precisar preencher os campos manualmente.' },
   { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
     q:'FGTS existe para PJ?',
-    a:'Não formalmente — o PJ não tem direito ao FGTS. Mas como boa prática, recomenda-se <strong>provisionar 8% do líquido</strong> mensalmente numa conta separada, criando uma reserva equivalente. A calculadora tem o campo "Provisão FGTS" para isso: o valor é descontado do líquido PJ, tornando a comparação mais justa e realista.' },
+    a:'Não formalmente. Mas como boa prática, recomenda-se <strong>provisionar 8% do líquido</strong> mensalmente numa conta separada. Use o campo "Provisão FGTS" — ele é descontado do líquido PJ e entra no ponto de equilíbrio, tornando a comparação mais justa.' },
   { tag:'PJ', tc:'var(--pj)', tb:'var(--pj-bg)',
     q:'Qual regime tributário devo escolher?',
-    a:'Depende do faturamento anual e do perfil de despesas:<ul><li><strong>MEI</strong>: até R$ 81k/ano (2026). DAS fixo e simples, mas CNPJ limitado para grandes empresas.</li><li><strong>Simples Anexo III</strong>: fator R ≥ 28% (folha/faturamento alta). Alíquota começa em 6%.</li><li><strong>Simples Anexo V</strong>: fator R &lt; 28%. Começa em 15,5%.</li><li><strong>Lucro Presumido</strong>: faturamento acima do Simples ou quando a carga é menor. ~13,4% efetivo.</li><li><strong>Autônomo/RPA</strong>: sem empresa. INSS 11% + IRRF retido pelo tomador.</li></ul>Consulte sempre um contador para o seu caso específico.' },
+    a:'<ul><li><strong>MEI</strong>: até R$ 81k/ano (2026). DAS fixo, mas CNPJ limitado.</li><li><strong>Simples III</strong>: fator R ≥ 28%. Começa em 6%.</li><li><strong>Simples V</strong>: fator R &lt; 28%. Começa em 15,5%.</li><li><strong>Lucro Presumido</strong>: faturamento alto ou carga menor. ~13,4%.</li><li><strong>RPA</strong>: sem empresa. INSS 11% + IRRF retidos pelo tomador.</li></ul>Consulte sempre um contador.' },
   { tag:'Geral', tc:'#555', tb:'#f0f0f0',
     q:'Quando o PJ definitivamente compensa?',
-    a:'PJ costuma compensar quando: (1) a NF está <strong>bem acima do ponto de equilíbrio</strong>; (2) você já tem contador, saúde e INSS provisionados; (3) o regime tributário tem carga baixa (MEI ou Simples III); (4) você tem <strong>estabilidade de contratos</strong> — sem risco de meses sem faturar. Lembre: PJ não tem estabilidade de emprego, aviso prévio, seguro-desemprego nem FGTS automático. Risco maior requer remuneração maior.' },
+    a:'PJ costuma compensar quando: (1) NF <strong>bem acima do ponto de equilíbrio</strong>; (2) contador, saúde e INSS já estão provisionados; (3) regime tributário leve (MEI ou Simples III); (4) <strong>estabilidade de contratos</strong> — sem meses sem faturar. Lembre: PJ não tem aviso prévio, seguro-desemprego nem FGTS automático.' },
+  { tag:'Geral', tc:'#555', tb:'#f0f0f0',
+    q:'Como compartilhar um cenário?',
+    a:'Clique em <strong>"🔗 Copiar link do cenário"</strong> na barra lateral. Todos os campos são codificados na URL — quem abrir o link verá exatamente os mesmos valores preenchidos. Funciona também para salvar um cenário como favorito no navegador.' },
 ];
 
 let faqDone = false, faqChip = 'Todas';
@@ -1016,22 +1076,16 @@ function filterFAQ() {
   const items = document.querySelectorAll('.faq-item');
   let vis = 0;
   items.forEach(el => {
-    const tagMatch = faqChip==='Todas' || el.dataset.tag===faqChip;
-    const textMatch = !q || el.textContent.toLowerCase().includes(q);
-    const show = tagMatch && textMatch;
+    const show = (faqChip==='Todas'||el.dataset.tag===faqChip) && (!q||el.textContent.toLowerCase().includes(q));
     el.style.display = show ? '' : 'none';
     if (show) vis++;
   });
-  const total = FAQ_DATA.length;
   const cnt = document.getElementById('faq-count');
-  if (cnt) cnt.textContent = vis === total ? `${total} perguntas` : `${vis} de ${total}`;
+  if (cnt) cnt.textContent = vis===FAQ_DATA.length ? `${FAQ_DATA.length} perguntas` : `${vis} de ${FAQ_DATA.length}`;
   const grid = document.getElementById('faq-grid');
   const empty = grid.querySelector('.faq-empty');
-  if (!vis) {
-    if (!empty) grid.insertAdjacentHTML('beforeend','<div class="faq-empty">Nenhuma pergunta encontrada.</div>');
-  } else {
-    if (empty) empty.remove();
-  }
+  if (!vis) { if (!empty) grid.insertAdjacentHTML('beforeend','<div class="faq-empty">Nenhuma pergunta encontrada.</div>'); }
+  else { if (empty) empty.remove(); }
 }
 
 // ══ CENÁRIOS ══════════════════════════════════════════════════════════════════
@@ -1077,27 +1131,87 @@ function renderScen() {
   const el = document.getElementById('scen-list');
   if (!scens.length) {
     el.innerHTML = '<div class="scen-empty">Nenhum cenário salvo ainda.<br>Preencha os dados e clique em "💾 Salvar".</div>';
+    document.getElementById('comp-section').style.display = 'none';
     return;
   }
-  el.innerHTML = [...scens].reverse().map((s,ri) => {
+  el.innerHTML = [...scens].reverse().map((sc,ri) => {
     const i = scens.length-1-ri;
-    const dt = new Date(s.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    const dt = new Date(sc.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
     return `<div class="scen-item" onclick="applyForm(scenData[${i}])">
-      <div style="flex:1"><div class="scen-name">${s.name}</div><div class="scen-ts">${dt}</div></div>
+      <div style="flex:1"><div class="scen-name">${sc.name}</div><div class="scen-ts">${dt}</div></div>
       <button class="scen-del" onclick="delScen(${i},event)" title="Excluir">✕</button>
     </div>`;
   }).join('');
-  window.scenData = scens.map(s => s.data);
+  window.scenData = scens.map(sc => sc.data);
+
+  // Comparação: só aparece com 2+ cenários
+  const compSec = document.getElementById('comp-section');
+  if (scens.length >= 2) {
+    compSec.style.display = '';
+    const selA = document.getElementById('comp-a');
+    const selB = document.getElementById('comp-b');
+    const opts = scens.map((sc,i) => `<option value="${i}">${sc.name}</option>`).join('');
+    selA.innerHTML = opts; selB.innerHTML = opts;
+    // Seleciona os dois últimos por padrão
+    selA.value = scens.length - 2;
+    selB.value = scens.length - 1;
+  } else {
+    compSec.style.display = 'none';
+  }
 }
 
-// ══ ANÁLISE IA — Modal multi-provider ════════════════════════════════════════
+function renderComp() {
+  const scens = getScens();
+  const iA = +document.getElementById('comp-a').value;
+  const iB = +document.getElementById('comp-b').value;
+  if (iA === iB) {
+    document.getElementById('comp-result').innerHTML = '<div class="note">Escolha dois cenários diferentes.</div>';
+    return;
+  }
+  const dA = scens[iA]; const dB = scens[iB];
+  const rA = calcForData(dA.data); const rB = calcForData(dB.data);
+
+  const fmtDiff = (a, b) => {
+    const d = a - b;
+    if (Math.abs(d) < 1) return '<span class="dim">igual</span>';
+    return d > 0
+      ? `<span class="grn">+${R(d)}</span>`
+      : `<span class="red">${R(d)}</span>`;
+  };
+
+  const rows = [
+    ['Bruto CLT',      R(rA.bruto),   R(rB.bruto)],
+    ['Nota fiscal PJ', R(rA.nf),      R(rB.nf)],
+    ['Regime PJ',      rA.regime,     rB.regime],
+    ['Líquido CLT',    R(rA.cltTot),  R(rB.cltTot)],
+    ['Líquido PJ',     R(rA.pjLiq),   R(rB.pjLiq)],
+    ['Break-even NF',  R(rA.beNF),    R(rB.beNF)],
+    ['PJ vs CLT',
+      rA.pjLiq >= rA.cltTot ? `<span class="grn">PJ +${R(rA.pjLiq-rA.cltTot)}</span>` : `<span class="red">CLT +${R(rA.cltTot-rA.pjLiq)}</span>`,
+      rB.pjLiq >= rB.cltTot ? `<span class="grn">PJ +${R(rB.pjLiq-rB.cltTot)}</span>` : `<span class="red">CLT +${R(rB.cltTot-rB.pjLiq)}</span>`
+    ],
+    ['Diferença líquido PJ', '', fmtDiff(rB.pjLiq, rA.pjLiq)],
+    ['Diferença líquido CLT','', fmtDiff(rB.cltTot, rA.cltTot)],
+  ];
+
+  document.getElementById('comp-result').innerHTML = `
+    <div class="comp-table">
+      <div class="comp-hdr">
+        <div>Métrica</div>
+        <div>${dA.name}</div>
+        <div>${dB.name}</div>
+      </div>
+      ${rows.map(([k,a,b]) => `<div class="comp-row"><div>${k}</div><div>${a}</div><div>${b}</div></div>`).join('')}
+    </div>`;
+}
+
+// ══ ANÁLISE IA ════════════════════════════════════════════════════════════════
 const IA_PROVIDERS = {
   gemini: { name:'Gemini', ls:'clt_key_gemini' },
   claude: { name:'Claude', ls:'clt_key_claude' },
   openai: { name:'OpenAI', ls:'clt_key_openai' },
 };
 let cfgActiveTab = 'gemini';
-
 function getKey(pid) { try { return localStorage.getItem(IA_PROVIDERS[pid].ls)||''; } catch(e){ return ''; } }
 function hasKey()    { return Object.keys(IA_PROVIDERS).some(p => !!getKey(p)); }
 function activeProvider() { return Object.keys(IA_PROVIDERS).find(p => !!getKey(p)) || null; }
@@ -1110,16 +1224,11 @@ function updateIAState() {
   const lbl = document.getElementById('cfg-btn-label');
   if (dot) dot.className = 'cfg-dot' + (ok ? ' ok' : '');
   if (lbl) { const p = activeProvider(); lbl.textContent = p ? `IA: ${IA_PROVIDERS[p].name}` : 'Configurar IA'; }
-  Object.keys(IA_PROVIDERS).forEach(p => {
-    const el = document.getElementById('key-'+p);
-    if (el) el.value = getKey(p);
-  });
+  Object.keys(IA_PROVIDERS).forEach(p => { const el=document.getElementById('key-'+p); if(el) el.value=getKey(p); });
 }
-
 function openCfg()  { document.getElementById('cfgOverlay').classList.add('open'); updateIAState(); }
 function closeCfg() { document.getElementById('cfgOverlay').classList.remove('open'); updateIAState(); }
 function overlayClose(e) { if (e.target===document.getElementById('cfgOverlay')) closeCfg(); }
-
 function setCfgTab(pid) {
   cfgActiveTab = pid;
   Object.keys(IA_PROVIDERS).forEach(p => {
@@ -1127,38 +1236,29 @@ function setCfgTab(pid) {
     document.getElementById('cpanel-'+p)?.classList.toggle('on', p===pid);
   });
 }
-
 function saveCfgKey(pid) {
   const val = (document.getElementById('key-'+pid)?.value||'').trim();
-  try {
-    if (val) localStorage.setItem(IA_PROVIDERS[pid].ls, val);
-    else localStorage.removeItem(IA_PROVIDERS[pid].ls);
-  } catch(e){}
+  try { if (val) localStorage.setItem(IA_PROVIDERS[pid].ls, val); else localStorage.removeItem(IA_PROVIDERS[pid].ls); } catch(e){}
   closeCfg();
 }
-
 (function() { updateIAState(); })();
 
 async function analisarIA() {
-  const pid = activeProvider();
-  if (!pid) { openCfg(); return; }
+  const pid = activeProvider(); if (!pid) { openCfg(); return; }
   const key = getKey(pid);
-
   const btn=document.getElementById('btn-ia'), res=document.getElementById('ia-result'), ans=document.getElementById('ia-answer');
   btn.disabled=true; btn.textContent='Analisando…';
   res.classList.add('show');
   ans.innerHTML='<span class="loading-dots"><span></span><span></span><span></span></span>';
-
-  const bruto = +document.getElementById('bruto').value||0;
-  const nf    = +document.getElementById('nf').value||0;
-  const regime= document.getElementById('regime').value;
-  const cltV  = document.getElementById('c-clt-total')?.textContent||'—';
-  const pjV   = document.getElementById('c-pj-total')?.textContent||'—';
-  const beV   = document.getElementById('be-val')?.textContent||'—';
-  const diffV = document.getElementById('diff-bar')?.textContent||'—';
-  const RL = {mei:'MEI',sn3:'Simples Anexo III',sn5:'Simples Anexo V',lp:'Lucro Presumido',rpa:'Autônomo/RPA',custom:'Alíquota personalizada'};
-
-  const prompt = `Você é especialista em CLT vs PJ no Brasil em ${new Date().getFullYear()}. Analise este cenário e seja direto e prático.
+  const bruto=+document.getElementById('bruto').value||0;
+  const nf=+document.getElementById('nf').value||0;
+  const regime=document.getElementById('regime').value;
+  const cltV=document.getElementById('c-clt-total')?.textContent||'—';
+  const pjV=document.getElementById('c-pj-total')?.textContent||'—';
+  const beV=document.getElementById('be-val')?.textContent||'—';
+  const diffV=document.getElementById('diff-bar')?.textContent||'—';
+  const RL={mei:'MEI',sn3:'Simples Anexo III',sn5:'Simples Anexo V',lp:'Lucro Presumido',rpa:'Autônomo/RPA',custom:'Alíquota personalizada'};
+  const prompt=`Você é especialista em CLT vs PJ no Brasil em ${new Date().getFullYear()}. Analise e seja direto.
 
 DADOS:
 - Salário bruto CLT: R$ ${bruto.toLocaleString('pt-BR')}
@@ -1169,66 +1269,43 @@ DADOS:
 - Ponto de equilíbrio (NF mínima p/ empatar CLT): ${beV}
 - Comparativo: ${diffV}
 
-Responda em português com 4 seções (use ## para o título de cada):
-
+Responda em português com 4 seções (## para o título):
 ## ✅ Veredicto
-Uma frase clara: CLT ou PJ compensa mais, e por quê.
-
 ## 📊 Análise dos números
-2-3 pontos sobre o que os números revelam.
-
 ## ⚠️ Riscos e pontos de atenção
-2-3 riscos do cenário aparentemente melhor.
-
 ## 💡 O que fazer agora
-2-3 ações concretas e práticas.
 
-Use valores em reais quando útil. Seja direto.`;
-
+Use valores em reais quando útil. Seja direto. Máximo 900 tokens.`;
   try {
     let text;
-    if (pid === 'gemini') {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-        { method:'POST', headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.35,maxOutputTokens:900}}) });
-      const d = await r.json();
-      if (d.error) throw new Error(d.error.message);
-      text = d.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
-    } else if (pid === 'claude') {
-      const r = await fetch('https://api.anthropic.com/v1/messages',
-        { method:'POST', headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-          body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:900,messages:[{role:'user',content:prompt}]}) });
-      const d = await r.json();
-      if (d.error) throw new Error(d.error.message);
-      text = d.content?.[0]?.text||'Sem resposta.';
+    if (pid==='gemini') {
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.35,maxOutputTokens:900}})});
+      const d=await r.json(); if(d.error) throw new Error(d.error.message);
+      text=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
+    } else if (pid==='claude') {
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:900,messages:[{role:'user',content:prompt}]})});
+      const d=await r.json(); if(d.error) throw new Error(d.error.message);
+      text=d.content?.[0]?.text||'Sem resposta.';
     } else {
-      const r = await fetch('https://api.openai.com/v1/chat/completions',
-        { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-          body:JSON.stringify({model:'gpt-4o-mini',max_tokens:900,messages:[{role:'user',content:prompt}]}) });
-      const d = await r.json();
-      if (d.error) throw new Error(d.error.message);
-      text = d.choices?.[0]?.message?.content||'Sem resposta.';
+      const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:900,messages:[{role:'user',content:prompt}]})});
+      const d=await r.json(); if(d.error) throw new Error(d.error.message);
+      text=d.choices?.[0]?.message?.content||'Sem resposta.';
     }
-    ans.innerHTML = fmtIA(text);
+    ans.innerHTML=fmtIA(text);
   } catch(e) {
-    const msg = String(e.message||e);
-    const authErr = msg.includes('401')||msg.includes('403')||msg.includes('invalid')||msg.toLowerCase().includes('key');
-    ans.innerHTML = authErr
-      ? `❌ Chave inválida ou sem permissão. <a onclick="openCfg()" style="color:var(--acc);cursor:pointer">Reconfigurar</a>`
-      : `<span style="color:var(--warn)">Erro: ${msg}</span>`;
-  } finally {
-    btn.disabled=false; btn.textContent='🤖 Analisar cenário atual';
-  }
+    const msg=String(e.message||e);
+    const authErr=msg.includes('401')||msg.includes('403')||msg.includes('invalid')||msg.toLowerCase().includes('key');
+    ans.innerHTML=authErr?`❌ Chave inválida. <a onclick="openCfg()" style="color:var(--acc);cursor:pointer">Reconfigurar</a>`:`<span style="color:var(--warn)">Erro: ${msg}</span>`;
+  } finally { btn.disabled=false; btn.textContent='🤖 Analisar cenário atual'; }
 }
 
 function fmtIA(t) {
   return t
-    .replace(/## (.+)/g, '<h3>$1</h3>')
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/^[-•]\s+(.+)/gm, '<li>$1</li>')
-    .replace(/((<li>[^<]*<\/li>\s*)+)/g, '<ul>$1</ul>')
-    .replace(/\n{2,}/g, '<br><br>')
-    .replace(/\n/g, '<br>');
+    .replace(/## (.+)/g,'<h3>$1</h3>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^[-•]\s+(.+)/gm,'<li>$1</li>')
+    .replace(/((<li>[^<]*<\/li>\s*)+)/g,'<ul>$1</ul>')
+    .replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
 }
 </script>
