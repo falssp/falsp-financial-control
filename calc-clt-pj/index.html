@@ -187,9 +187,15 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .diff-bar { background: var(--surf); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--fg2); margin-bottom: 20px; }
 .diff-bar strong { color: var(--fg); }
 
-/* MEI limit warning */
+/* MEI / Simples limit warning */
 .mei-warn { display:none; margin-bottom:12px; padding:10px 14px; background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn); border-radius:6px; font-size:11px; }
 .mei-warn.show { display:flex; align-items:center; gap:4px; }
+.sn-warn  { display:none; margin-bottom:12px; padding:10px 14px; background:color-mix(in srgb,var(--pj) 10%,var(--surf)); color:var(--pj); border:1px solid color-mix(in srgb,var(--pj) 35%,transparent); border-radius:6px; font-size:11px; }
+.sn-warn.show { display:flex; align-items:center; gap:4px; }
+
+/* Botão limpar */
+.btn-clear { width:100%; padding:9px 12px; background:none; color:var(--fg3); border:1px dashed var(--border); border-radius:6px; font:500 12px/1 'Inter',sans-serif; cursor:pointer; transition:all .15s; margin-top:6px; }
+.btn-clear:hover { border-color:#d04040; color:#d04040; }
 
 .dtable { background: var(--surf); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow); }
 .dtable-head { padding: 12px 18px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--fg3); }
@@ -501,6 +507,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
     <div class="sec" style="padding-bottom:16px">
       <button class="btn-pdf" onclick="printScenario()">⬇ Exportar PDF</button>
       <button class="btn-share" id="btn-share" onclick="shareURL()">🔗 Copiar link do cenário</button>
+      <button class="btn-clear" onclick="clearForm()">🗑 Limpar todos os campos</button>
     </div>
   </aside>
 
@@ -521,6 +528,12 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
     <div class="mei-warn" id="mei-warn">
       ⚠️ <strong>Limite MEI ultrapassado:</strong> <span id="mei-warn-txt"></span>
     </div>
+    <div class="sn-warn" id="sn-warn">
+      ℹ️ <strong>Faixa Simples Nacional:</strong> <span id="sn-warn-txt"></span>
+    </div>
+
+    <!-- input oculto para importar JSON -->
+    <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importScenarios(event)">
 
     <div class="tabs">
       <button class="tab on" onclick="tab('comp')">Comparativo</button>
@@ -637,10 +650,17 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       <div class="dtable-head" style="background:none;padding:0 0 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3)">Cenários salvos</div>
       <div id="scen-list" class="scen-list"></div>
       <div class="save-scen-row">
-        <input class="save-scen-inp" id="scen-name" type="text" placeholder="Nome do cenário — ex: Proposta A, Empresa X…" maxlength="40">
+        <input class="save-scen-inp" id="scen-name" type="text" placeholder="Nome — ex: Proposta A, Empresa X…" maxlength="40">
         <button class="btn-save-scen" onclick="saveScen()">💾 Salvar</button>
       </div>
-      <div class="note">Até 5 cenários guardados no navegador. Clique num cenário para carregar.</div>
+      <div style="margin-bottom:10px">
+        <input class="save-scen-inp" id="scen-note" type="text" placeholder="Nota opcional — ex: proposta inicial, 15/11, pós-negociação…" maxlength="80" style="font-size:11px;color:var(--fg3)">
+      </div>
+      <div class="note" style="margin-bottom:10px">Até 5 cenários guardados no navegador. Clique num cenário para carregar.</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn-share" style="flex:1;margin-top:0" onclick="exportScenarios()">⬇ Exportar cenários (.json)</button>
+        <button class="btn-share" style="flex:1;margin-top:0" onclick="document.getElementById('import-json-input').click()">⬆ Importar cenários</button>
+      </div>
 
       <!-- Gráfico de break-even -->
       <div class="chart-section" id="chart-section" style="display:none">
@@ -990,6 +1010,30 @@ function calc() {
     meiWarn.classList.remove('show');
   }
 
+  // Simples Nacional faixa warning
+  const snWarn = document.getElementById('sn-warn');
+  const SN_FAIXAS = [
+    { lim:180000,  prox:360000,  al3:'7,3%',  al5:'17,5%' },
+    { lim:360000,  prox:720000,  al3:'9,5%',  al5:'22,8%' },
+    { lim:720000,  prox:1800000, al3:'10,7%', al5:'24%'   },
+    { lim:1800000, prox:3600000, al3:'14,3%', al5:'28,8%' },
+  ];
+  if ((regime === 'sn3' || regime === 'sn5') && nf > 0) {
+    const fat = nf * 12;
+    const faixa = SN_FAIXAS.find(f => fat > f.lim);
+    if (faixa) {
+      const al = regime === 'sn3' ? faixa.al3 : faixa.al5;
+      const proxK = faixa.prox >= 1000000 ? (faixa.prox/1000000).toFixed(1)+'M' : (faixa.prox/1000)+'k';
+      document.getElementById('sn-warn-txt').textContent =
+        `faturamento de ${R(fat)}/ano está na 2ª+ faixa — alíquota sobe para ~${al} (${regime==='sn3'?'Anexo III':'Anexo V'}). Atualize o campo "alíquota efetiva" com seu contador. Próxima faixa: R$ ${proxK}/ano.`;
+      snWarn.classList.add('show');
+    } else {
+      snWarn.classList.remove('show');
+    }
+  } else {
+    snWarn.classList.remove('show');
+  }
+
   const ferOpp = nf / 12;
   const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros + ferOpp;
   const pjLiq  = nf - pjDesp;
@@ -1232,12 +1276,14 @@ function applyForm(d) {
 function saveScen() {
   const name = (document.getElementById('scen-name').value||'').trim();
   if (!name) { document.getElementById('scen-name').focus(); return; }
+  const note = (document.getElementById('scen-note')?.value||'').trim();
   const scens = getScens();
   if (scens.length >= 5) scens.shift();
-  scens.push({ name, ts: Date.now(), data: snapForm() });
+  scens.push({ name, note, ts: Date.now(), data: snapForm() });
   putScens(scens);
   localStorage.setItem('clt_last_scen_name', name);
   document.getElementById('scen-name').value = '';
+  if (document.getElementById('scen-note')) document.getElementById('scen-note').value = '';
   renderScen();
 }
 
@@ -1258,8 +1304,9 @@ function renderScen() {
   el.innerHTML = [...scens].reverse().map((sc,ri) => {
     const i = scens.length-1-ri;
     const dt = new Date(sc.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    const noteHtml = sc.note ? `<div class="scen-ts" style="margin-top:2px;font-style:italic">${sc.note}</div>` : '';
     return `<div class="scen-item" onclick="applyForm(scenData[${i}])">
-      <div style="flex:1"><div class="scen-name">${sc.name}</div><div class="scen-ts">${dt}</div></div>
+      <div style="flex:1"><div class="scen-name">${sc.name}</div><div class="scen-ts">${dt}</div>${noteHtml}</div>
       <button class="scen-del" onclick="delScen(${i},event)" title="Excluir">✕</button>
     </div>`;
   }).join('');
@@ -1478,5 +1525,55 @@ function fmtIA(t) {
     .replace(/^[-•]\s+(.+)/gm,'<li>$1</li>')
     .replace(/((<li>[^<]*<\/li>\s*)+)/g,'<ul>$1</ul>')
     .replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+// ── Limpar formulário ─────────────────────────────────────────────────────────
+function clearForm() {
+  if (!confirm('Limpar todos os campos? Os cenários salvos não são apagados.')) return;
+  const ids = ['bruto','va','vr','vavr','home','plr','saude','nf','aliq','contador','saudePJ','inssPJ','fgtsProv','outros'];
+  ids.forEach(id => { const el=document.getElementById(id); if(el){ el.value=''; } });
+  document.getElementById('regime').value = 'mei';
+  document.getElementById('mei-ativ').value = '86.05';
+  document.getElementById('reaj-pct').value = '';
+  document.getElementById('reaj-slider').value = 0;
+  document.getElementById('reaj-result').classList.remove('show');
+  if (!plano) togPlano(); // reset para ligado
+  history.replaceState(null, '', location.pathname);
+  updRegime();
+  calc();
+}
+
+// ── Backup / restore de cenários ──────────────────────────────────────────────
+function exportScenarios() {
+  const scens = getScens();
+  if (!scens.length) { alert('Nenhum cenário para exportar.'); return; }
+  const json = JSON.stringify({ v:1, exported: new Date().toISOString(), scenarios: scens }, null, 2);
+  const blob = new Blob([json], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `clt-pj-cenarios-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importScenarios(ev) {
+  const file = ev.target.files?.[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const obj = JSON.parse(e.target.result);
+      const incoming = obj.scenarios || obj; // aceita array direto também
+      if (!Array.isArray(incoming) || !incoming.length) throw new Error('Arquivo inválido');
+      const existing = getScens();
+      // merge: adiciona novos por nome, sem duplicar
+      const names = new Set(existing.map(s => s.name));
+      const added = incoming.filter(s => !names.has(s.name));
+      const merged = [...existing, ...added].slice(-5); // mantém até 5, mais recentes
+      putScens(merged);
+      tab('scen'); renderScen();
+      alert(`${added.length} cenário(s) importado(s).${added.length < incoming.length ? ` ${incoming.length-added.length} já existia(m) com o mesmo nome.` : ''}`);
+    } catch(err) { alert('Erro ao ler o arquivo: ' + err.message); }
+    ev.target.value = '';
+  };
+  reader.readAsText(file);
 }
 </script>
