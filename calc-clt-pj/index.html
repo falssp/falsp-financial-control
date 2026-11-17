@@ -74,7 +74,14 @@ input[type="number"]::placeholder { color: var(--fg3); opacity: 1; }
   .wrap { display: block; } main { padding: 0; }
   .pane { display: block !important; break-inside: avoid; }
   body { font-size: 11px; }
+  .print-header { display: flex !important; }
 }
+.print-header {
+  display: none; justify-content: space-between; align-items: baseline;
+  padding: 0 0 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+}
+.print-header h2 { font-size: 16px; font-weight: 700; }
+.print-header span { font-size: 11px; color: var(--fg3); }
 
 .wrap { display: flex; height: 100%; min-height: 100%; }
 
@@ -115,6 +122,29 @@ input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 .has-pre input { padding-left: 26px; }
 select { -webkit-appearance: none; cursor: pointer; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* Range slider */
+input[type="range"] {
+  width: 100%; accent-color: var(--acc); cursor: pointer; height: 4px;
+  background: var(--border); border-radius: 2px; border: none; padding: 0;
+  outline: none; -webkit-appearance: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  background: var(--acc); border-radius: 50%; cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; background: var(--acc); border-radius: 50%; border: none; cursor: pointer;
+}
+.reaj-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.reaj-pct { width: 70px; flex-shrink: 0; }
+.reaj-result { background: color-mix(in srgb, var(--acc) 8%, var(--surf)); border: 1px solid color-mix(in srgb, var(--acc) 25%, transparent); border-radius: 6px; padding: 9px 12px; font-size: 11px; line-height: 1.65; display: none; }
+.reaj-result.show { display: block; }
+.reaj-result .rl { color: var(--fg2); }
+.reaj-result .rv { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.reaj-result .rd { font-size: 10px; }
+.reaj-result .grn { color: var(--clt); }
+.reaj-result .red { color: #d04040; }
 
 .tog-row {
   display: flex; align-items: center; gap: 8px;
@@ -196,6 +226,20 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .save-scen-inp:focus { border-color:var(--acc) }
 .btn-save-scen { background:var(--acc); color:#fff; border:none; border-radius:5px; padding:8px 14px; font:600 12px 'Inter',sans-serif; cursor:pointer; white-space:nowrap }
 .btn-save-scen:hover { opacity:.85 }
+
+/* Gráfico de break-even */
+.chart-section { margin-bottom:20px }
+.chart-wrap { background:var(--surf); border:1px solid var(--border); border-radius:10px; padding:16px 18px; overflow:hidden }
+.chart-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--fg3); margin-bottom:14px }
+.chart-row { display:flex; align-items:center; gap:10px; margin-bottom:10px }
+.chart-label { font-size:11px; color:var(--fg2); width:90px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right }
+.chart-bar-wrap { flex:1; position:relative; height:22px }
+.chart-bar { height:22px; border-radius:3px; transition:width .4s ease; min-width:3px; display:flex; align-items:center }
+.chart-bar-val { font-family:'JetBrains Mono',monospace; font-size:10px; color:#fff; padding:0 7px; white-space:nowrap; text-shadow:0 1px 2px rgba(0,0,0,.3) }
+.chart-nf-line { position:absolute; top:0; bottom:0; width:2px; border-radius:1px; }
+.chart-legend { display:flex; gap:14px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border) }
+.chart-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--fg3) }
+.chart-legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0 }
 
 /* Comparação de cenários */
 .comp-section { margin-top:20px; border-top:1px solid var(--border); padding-top:16px }
@@ -437,13 +481,36 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
     </div>
 
+    <!-- Simulador de Reajuste -->
+    <div class="sec">
+      <div class="sec-label">Simulador de reajuste CLT</div>
+      <div class="field">
+        <label>Proposta de aumento</label>
+        <div class="reaj-row">
+          <input type="range" id="reaj-slider" min="-30" max="100" step="1" value="0" oninput="syncReaj('slider')">
+          <div class="inp-wrap has-pre reaj-pct">
+            <span class="inp-pre">%</span>
+            <input type="number" id="reaj-pct" placeholder="0" min="-30" max="200" step="1" oninput="syncReaj('pct')">
+          </div>
+        </div>
+        <div class="hint">Simulação de contra-proposta em cima do bruto atual</div>
+      </div>
+      <div class="reaj-result" id="reaj-result"></div>
+    </div>
+
     <div class="sec" style="padding-bottom:16px">
-      <button class="btn-pdf" onclick="window.print()">⬇ Exportar PDF</button>
+      <button class="btn-pdf" onclick="printScenario()">⬇ Exportar PDF</button>
       <button class="btn-share" id="btn-share" onclick="shareURL()">🔗 Copiar link do cenário</button>
     </div>
   </aside>
 
   <main class="main">
+    <!-- Print header (only visible on print) -->
+    <div class="print-header" id="print-header">
+      <h2 id="print-title">CLT vs PJ</h2>
+      <span id="print-date"></span>
+    </div>
+
     <div class="review-banner" id="review-banner">
       ⚠️ As tabelas desta calculadora são de <strong id="review-year">2026</strong>. Em janeiro de cada ano, verifique se INSS, IRRF e DAS MEI foram atualizados.
     </div>
@@ -451,7 +518,6 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       🗓️ <strong>Início de ano detectado.</strong> Verifique e atualize: tabela INSS, tabela IRRF, DAS MEI e limite MEI. Clique para fechar.
     </div>
 
-    <!-- MEI limit warning -->
     <div class="mei-warn" id="mei-warn">
       ⚠️ <strong>Limite MEI ultrapassado:</strong> <span id="mei-warn-txt"></span>
     </div>
@@ -576,6 +642,19 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
       </div>
       <div class="note">Até 5 cenários guardados no navegador. Clique num cenário para carregar.</div>
 
+      <!-- Gráfico de break-even -->
+      <div class="chart-section" id="chart-section" style="display:none">
+        <div class="chart-wrap">
+          <div class="chart-title">Break-even NF — comparativo visual dos cenários</div>
+          <div id="chart-bars"></div>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--warn)"></div>Break-even (NF mínima)</div>
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--pj)"></div>NF atual do cenário</div>
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--clt)"></div>CLT total</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Comparação lado a lado -->
       <div class="comp-section" id="comp-section" style="display:none">
         <div class="sec-label" style="margin-bottom:12px">Comparar dois cenários</div>
@@ -671,7 +750,6 @@ const ANO = new Date().getFullYear();
   if (saved) document.documentElement.dataset.theme = saved;
   updateThemeBtn();
 })();
-
 function updateThemeBtn() {
   const root = document.documentElement;
   const dark = root.dataset.theme === 'dark' ||
@@ -679,7 +757,6 @@ function updateThemeBtn() {
   const btn = document.getElementById('btn-theme');
   if (btn) btn.textContent = dark ? '☀️' : '🌙';
 }
-
 function toggleTheme() {
   const root = document.documentElement;
   const dark = root.dataset.theme === 'dark' ||
@@ -690,13 +767,30 @@ function toggleTheme() {
   updateThemeBtn();
 }
 
+// ── PDF com nome do cenário ───────────────────────────────────────────────────
+function printScenario() {
+  const scenName = document.getElementById('scen-name').value.trim() ||
+    localStorage.getItem('clt_last_scen_name') || 'Cenário';
+  const bruto = +document.getElementById('bruto').value || 0;
+  const nf    = +document.getElementById('nf').value || 0;
+  const regime = document.getElementById('regime').value;
+  const RL = {mei:'MEI',sn3:'Simples III',sn5:'Simples V',lp:'Lucro Presumido',rpa:'RPA',custom:'Custom'};
+  document.getElementById('print-title').textContent =
+    `CLT vs PJ — ${scenName} — Bruto R$${bruto.toLocaleString('pt-BR')} · NF R$${nf.toLocaleString('pt-BR')} (${RL[regime]||regime})`;
+  document.getElementById('print-date').textContent =
+    new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+  window.print();
+}
+window.addEventListener('afterprint', () => {
+  document.getElementById('print-title').textContent = 'CLT vs PJ';
+});
+
 // ── URL sharing ───────────────────────────────────────────────────────────────
 const URL_KEYS = {
   b:'bruto', va:'va', vr:'vr', vavr:'vavr', ho:'home',
   plr:'plr', sa:'saude', nf:'nf', al:'aliq',
   cn:'contador', sp:'saudePJ', ip:'inssPJ', fp:'fgtsProv', ou:'outros'
 };
-
 function encodeState() {
   const p = new URLSearchParams();
   for (const [k, id] of Object.entries(URL_KEYS)) {
@@ -708,7 +802,6 @@ function encodeState() {
   p.set('pl', plano ? '1' : '0');
   return '#' + p.toString();
 }
-
 function decodeState() {
   if (!location.hash || location.hash.length < 2) return;
   try {
@@ -721,13 +814,11 @@ function decodeState() {
     if (p.has('pl') && p.get('pl') !== (plano ? '1' : '0')) togPlano();
   } catch(e) {}
 }
-
 let hashTimer;
 function scheduleHashUpdate() {
   clearTimeout(hashTimer);
   hashTimer = setTimeout(() => { history.replaceState(null, '', encodeState()); }, 400);
 }
-
 function shareURL() {
   history.replaceState(null, '', encodeState());
   const url = location.href;
@@ -736,9 +827,7 @@ function shareURL() {
     btn.textContent = '✅ Link copiado!';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = '🔗 Copiar link do cenário'; btn.classList.remove('copied'); }, 2000);
-  }).catch(() => {
-    prompt('Copie o link:', url);
-  });
+  }).catch(() => { prompt('Copie o link:', url); });
 }
 
 // ── MEI limite ────────────────────────────────────────────────────────────────
@@ -747,7 +836,6 @@ function meiLimite() {
   if (ANO >= 2027) return 110000;
   return 81000;
 }
-
 (function initAnoNovo() {
   const m = new Date().getMonth();
   if (m <= 1) document.getElementById('new-year-banner').hidden = false;
@@ -788,8 +876,6 @@ function updRegime() {
     document.getElementById('aliq').value = (info.aliq * 100).toFixed(1);
   }
   document.getElementById('aliq-hint').textContent = info.hint;
-
-  // RPA: pre-preenche INSS mínimo e explica o cálculo
   const inssHint = document.getElementById('inss-hint');
   if (r === 'rpa') {
     document.getElementById('inssPJ').value = '';
@@ -801,6 +887,15 @@ function updRegime() {
     document.getElementById('inssPJ').placeholder = '0';
     if (inssHint) inssHint.textContent = 'Autônomo: ~20% s/ sal. contribuição (teto ~R$1.794)';
   }
+  calc();
+}
+
+// ── Simulador de reajuste ─────────────────────────────────────────────────────
+function syncReaj(src) {
+  const pct = document.getElementById('reaj-pct');
+  const sldr = document.getElementById('reaj-slider');
+  if (src === 'slider') { pct.value = sldr.value; }
+  else { sldr.value = Math.max(-30, Math.min(100, +pct.value||0)); }
   calc();
 }
 
@@ -854,13 +949,13 @@ function calc() {
   const saudPJ  = +document.getElementById('saudePJ').value||0;
   const fgtsPrv = +document.getElementById('fgtsProv').value||0;
   const outros  = +document.getElementById('outros').value||0;
+  const reajPct = +document.getElementById('reaj-pct').value||0;
 
   // ── CLT ──
   const ins  = inss(bruto);
   const ir   = irrf(bruto - ins);
   const liq  = bruto - ins - ir;
   const dec  = liq / 12;
-  // ⅓ constitucional isento de INSS e IRRF (IN RFB 971/2009 · art. 7° CF)
   const ferINSS = inss(bruto);
   const ferIR   = irrf(bruto - ferINSS);
   const ferLiq  = bruto - ferINSS - ferIR + bruto / 3;
@@ -875,10 +970,8 @@ function calc() {
     impPJ  = +document.getElementById('mei-ativ').value;
     inssPJ = +document.getElementById('inssPJ').value||0;
   } else if (regime === 'rpa') {
-    // INSS 11% retido pelo tomador, limitado ao teto
     inssPJ = Math.min(nf * 0.11, 8475.55 * 0.11);
-    impPJ  = irrf(nf - inssPJ); // IRRF retido na fonte
-    // Exibe o valor calculado no campo (read-only)
+    impPJ  = irrf(nf - inssPJ);
     const inssEl = document.getElementById('inssPJ');
     if (inssEl) inssEl.value = inssPJ > 0 ? inssPJ.toFixed(0) : '';
   } else {
@@ -886,13 +979,12 @@ function calc() {
     inssPJ = +document.getElementById('inssPJ').value||0;
   }
 
-  // MEI limit warning
+  // MEI warning
   const meiWarn = document.getElementById('mei-warn');
   if (regime === 'mei' && nf * 12 > meiLimite()) {
     const limK = meiLimite()/1000;
-    const fatAnual = R(nf * 12);
     document.getElementById('mei-warn-txt').textContent =
-      `faturamento anual estimado de ${fatAnual} ultrapassa o limite MEI de R$ ${limK}k. Considere migrar para Simples Nacional.`;
+      `faturamento anual estimado de ${R(nf * 12)} ultrapassa o limite MEI de R$ ${limK}k. Considere migrar para Simples Nacional.`;
     meiWarn.classList.add('show');
   } else {
     meiWarn.classList.remove('show');
@@ -906,21 +998,13 @@ function calc() {
   let beNF = cltTot;
   for(let i=0;i<60;i++){
     let imp2, inss2;
-    if (regime==='mei') {
-      imp2  = +document.getElementById('mei-ativ').value;
-      inss2 = +document.getElementById('inssPJ').value||0;
-    } else if (regime==='rpa') {
-      inss2 = Math.min(beNF * 0.11, 8475.55 * 0.11);
-      imp2  = irrf(beNF - inss2);
-    } else {
-      imp2  = beNF * aliq;
-      inss2 = +document.getElementById('inssPJ').value||0;
-    }
-    const fer2 = beNF / 12;
-    beNF = cltTot + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + fer2;
+    if (regime==='mei') { imp2=+document.getElementById('mei-ativ').value; inss2=+document.getElementById('inssPJ').value||0; }
+    else if (regime==='rpa') { inss2=Math.min(beNF*.11,8475.55*.11); imp2=irrf(beNF-inss2); }
+    else { imp2=beNF*aliq; inss2=+document.getElementById('inssPJ').value||0; }
+    beNF = cltTot + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + beNF/12;
   }
 
-  // ── DOM ──
+  // ── DOM comparativo ──
   s('c-clt-total', R(cltTot)); s('c-pj-total', R(pjLiq));
   s('c-liq', R(liq)); s('c-13', pos(dec)); s('c-fer', pos(fer));
   s('c-fgt', pos(fgt)); s('c-bens', pos(va+hm)); s('c-plr', pos(plrM)); s('c-sau', pos(saud));
@@ -930,7 +1014,6 @@ function calc() {
   const diff = pjLiq - cltTot;
   document.getElementById('diff-bar').innerHTML =
     `${diff>=0?'▲':'▼'} PJ <strong>${diff>=0?'paga mais':'paga menos'} ${R(Math.abs(diff))}/mês</strong> que CLT no cenário atual.`;
-
   s('be-val', R(beNF)+'/mês');
   const gap = beNF - nf;
   s('be-sub', gap>0
@@ -941,17 +1024,56 @@ function calc() {
   s('d-bens', pos(va+hm)); s('d-saud', pos(saud));
   s('d-13', pos(dec)); s('d-fer', pos(fer)); s('d-fgt', pos(fgt)); s('d-plr', pos(plrM));
   s('d-total', R(cltTot));
-
   s('p-d-nf', R(nf)); s('p-d-imp', neg(impPJ)); s('p-d-cnt', neg(cnt));
   s('p-d-inss', neg(inssPJ)); s('p-d-sau', neg(saudPJ)); s('p-d-fgt', neg(fgtsPrv)); s('p-d-fer', neg(ferOpp)); s('p-d-out', neg(outros));
   s('p-d-liq', R(pjLiq));
+
+  // ── Simulador de reajuste ──
+  const reajEl = document.getElementById('reaj-result');
+  if (reajPct !== 0 && bruto > 0) {
+    const novoB    = bruto * (1 + reajPct / 100);
+    const novoIns  = inss(novoB);
+    const novoIr   = irrf(novoB - novoIns);
+    const novoLiq  = novoB - novoIns - novoIr;
+    const novoDec  = novoLiq / 12;
+    const novoFerI = inss(novoB);
+    const novoFerR = irrf(novoB - novoFerI);
+    const novoFerL = novoB - novoFerI - novoFerR + novoB / 3;
+    const novoFer  = novoFerL / 12;
+    const novoFgt  = novoB * .08;
+    const novoPlr  = novoLiq * plrSal / 12;
+    const novoCLT  = novoLiq + novoDec + novoFer + novoFgt + va + hm + novoPlr + saud;
+    // Novo break-even com CLT novo
+    let novoBeNF = novoCLT;
+    for(let i=0;i<60;i++){
+      let imp2, inss2;
+      if (regime==='mei') { imp2=+document.getElementById('mei-ativ').value; inss2=+document.getElementById('inssPJ').value||0; }
+      else if (regime==='rpa') { inss2=Math.min(novoBeNF*.11,8475.55*.11); imp2=irrf(novoBeNF-inss2); }
+      else { imp2=novoBeNF*aliq; inss2=+document.getElementById('inssPJ').value||0; }
+      novoBeNF = novoCLT + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + novoBeNF/12;
+    }
+    const dClt  = novoCLT - cltTot;
+    const dBe   = novoBeNF - beNF;
+    const sinal = reajPct > 0 ? '+' : '';
+    reajEl.innerHTML = `
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--acc);margin-bottom:8px">Com ${sinal}${reajPct}% de reajuste</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px">
+        <span class="rl">Bruto CLT</span><span class="rv">${R(novoB)}</span>
+        <span class="rl">Total CLT</span><span class="rv">${R(novoCLT)} <span class="rd ${dClt>=0?'grn':'red'}">(${dClt>=0?'+':''}${R(dClt)})</span></span>
+        <span class="rl">Break-even NF</span><span class="rv">${R(novoBeNF)} <span class="rd ${dBe>=0?'red':'grn'}">(${dBe>=0?'+':''}${R(dBe)})</span></span>
+        <span class="rl">PJ ainda paga mais?</span><span class="rv ${pjLiq>=novoCLT?'grn':'red'}">${pjLiq>=novoCLT?'Sim ✓':'Não ✗'}</span>
+      </div>`;
+    reajEl.classList.add('show');
+  } else {
+    reajEl.classList.remove('show');
+  }
 
   scheduleHashUpdate();
 }
 
 function s(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
 
-// ── Função de cálculo para dados externos (comparação de cenários) ─────────
+// ── calcForData (usado por comparação e gráfico) ──────────────────────────────
 function calcForData(d) {
   const bruto   = +d.bruto||0;
   const va      = (+d.va||0) + (+d.vr||0) + (+d.vavr||0);
@@ -970,8 +1092,7 @@ function calcForData(d) {
   const ir   = irrf(bruto - ins);
   const liq  = bruto - ins - ir;
   const dec  = liq / 12;
-  const ferINSS = inss(bruto);
-  const ferIR   = irrf(bruto - ferINSS);
+  const ferINSS = inss(bruto); const ferIR = irrf(bruto - ferINSS);
   const ferLiq  = bruto - ferINSS - ferIR + bruto / 3;
   const fer     = ferLiq / 12;
   const fgt     = bruto * .08;
@@ -979,16 +1100,9 @@ function calcForData(d) {
   const cltTot  = liq + dec + fer + fgt + va + hm + plrM + saud;
 
   let impPJ, inssPJ;
-  if (regime === 'mei') {
-    impPJ  = +d['mei-ativ']||86.05;
-    inssPJ = +d.inssPJ||0;
-  } else if (regime === 'rpa') {
-    inssPJ = Math.min(nf * 0.11, 8475.55 * 0.11);
-    impPJ  = irrf(nf - inssPJ);
-  } else {
-    impPJ  = nf * aliq;
-    inssPJ = +d.inssPJ||0;
-  }
+  if (regime === 'mei')      { impPJ=+d['mei-ativ']||86.05; inssPJ=+d.inssPJ||0; }
+  else if (regime === 'rpa') { inssPJ=Math.min(nf*.11,8475.55*.11); impPJ=irrf(nf-inssPJ); }
+  else                       { impPJ=nf*aliq; inssPJ=+d.inssPJ||0; }
 
   const ferOpp = nf / 12;
   const pjDesp = impPJ + cnt + saudPJ + inssPJ + fgtsPrv + outros + ferOpp;
@@ -997,9 +1111,9 @@ function calcForData(d) {
   let beNF = cltTot;
   for(let i=0;i<60;i++){
     let imp2, inss2;
-    if (regime==='mei') { imp2=+d['mei-ativ']||86.05; inss2=+d.inssPJ||0; }
+    if (regime==='mei')      { imp2=+d['mei-ativ']||86.05; inss2=+d.inssPJ||0; }
     else if (regime==='rpa') { inss2=Math.min(beNF*.11,8475.55*.11); imp2=irrf(beNF-inss2); }
-    else { imp2=beNF*aliq; inss2=+d.inssPJ||0; }
+    else                     { imp2=beNF*aliq; inss2=+d.inssPJ||0; }
     beNF = cltTot + imp2 + cnt + saudPJ + inss2 + fgtsPrv + outros + beNF/12;
   }
 
@@ -1010,8 +1124,10 @@ function calcForData(d) {
 // ── Init ─────────────────────────────────────────────────────────────────────
 document.getElementById('review-year').textContent = ANO;
 document.querySelectorAll('input,select').forEach(el => {
-  el.addEventListener('input', calc);
-  el.addEventListener('change', calc);
+  if (el.id !== 'reaj-slider') {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  }
 });
 document.querySelectorAll('input[type="number"]').forEach(el => {
   el.addEventListener('focus', () => el.select());
@@ -1044,6 +1160,9 @@ const FAQ_DATA = [
   { tag:'Geral', tc:'#555', tb:'#f0f0f0',
     q:'Quando o PJ definitivamente compensa?',
     a:'PJ costuma compensar quando: (1) NF <strong>bem acima do ponto de equilíbrio</strong>; (2) contador, saúde e INSS já estão provisionados; (3) regime tributário leve (MEI ou Simples III); (4) <strong>estabilidade de contratos</strong> — sem meses sem faturar. Lembre: PJ não tem aviso prévio, seguro-desemprego nem FGTS automático.' },
+  { tag:'Geral', tc:'#555', tb:'#f0f0f0',
+    q:'Como usar o simulador de reajuste?',
+    a:'No sidebar, arraste o slider (ou digite o %) em <strong>"Simulador de reajuste CLT"</strong>. A calculadora mostra em tempo real: o novo bruto, o novo total CLT, o novo break-even necessário no PJ e se a NF atual ainda compensa. Útil para avaliar contra-propostas numa negociação.' },
   { tag:'Geral', tc:'#555', tb:'#f0f0f0',
     q:'Como compartilhar um cenário?',
     a:'Clique em <strong>"🔗 Copiar link do cenário"</strong> na barra lateral. Todos os campos são codificados na URL — quem abrir o link verá exatamente os mesmos valores preenchidos. Funciona também para salvar um cenário como favorito no navegador.' },
@@ -1117,6 +1236,7 @@ function saveScen() {
   if (scens.length >= 5) scens.shift();
   scens.push({ name, ts: Date.now(), data: snapForm() });
   putScens(scens);
+  localStorage.setItem('clt_last_scen_name', name);
   document.getElementById('scen-name').value = '';
   renderScen();
 }
@@ -1132,6 +1252,7 @@ function renderScen() {
   if (!scens.length) {
     el.innerHTML = '<div class="scen-empty">Nenhum cenário salvo ainda.<br>Preencha os dados e clique em "💾 Salvar".</div>';
     document.getElementById('comp-section').style.display = 'none';
+    document.getElementById('chart-section').style.display = 'none';
     return;
   }
   el.innerHTML = [...scens].reverse().map((sc,ri) => {
@@ -1144,7 +1265,11 @@ function renderScen() {
   }).join('');
   window.scenData = scens.map(sc => sc.data);
 
-  // Comparação: só aparece com 2+ cenários
+  // Gráfico
+  document.getElementById('chart-section').style.display = '';
+  renderChart(scens);
+
+  // Comparação
   const compSec = document.getElementById('comp-section');
   if (scens.length >= 2) {
     compSec.style.display = '';
@@ -1152,12 +1277,61 @@ function renderScen() {
     const selB = document.getElementById('comp-b');
     const opts = scens.map((sc,i) => `<option value="${i}">${sc.name}</option>`).join('');
     selA.innerHTML = opts; selB.innerHTML = opts;
-    // Seleciona os dois últimos por padrão
     selA.value = scens.length - 2;
     selB.value = scens.length - 1;
   } else {
     compSec.style.display = 'none';
   }
+}
+
+// ── Gráfico de break-even ─────────────────────────────────────────────────────
+function renderChart(scens) {
+  const data = scens.map(sc => ({ name: sc.name, r: calcForData(sc.data) }));
+  const maxVal = Math.max(...data.flatMap(d => [d.r.beNF, d.r.nf, d.r.cltTot])) * 1.05;
+  const pct = v => Math.max(2, Math.round(v / maxVal * 100));
+
+  // CSS var values
+  const getCSS = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  document.getElementById('chart-bars').innerHTML = data.map(d => {
+    const { r, name } = d;
+    const beW  = pct(r.beNF);
+    const nfW  = pct(r.nf);
+    const cltW = pct(r.cltTot);
+    const nfOk = r.nf >= r.beNF;
+    return `
+      <div class="chart-row">
+        <div class="chart-label" title="${name}">${name}</div>
+        <div style="flex:1">
+          <div class="chart-row" style="margin-bottom:3px;gap:5px">
+            <div style="width:52px;font-size:9px;color:var(--fg3);text-align:right;flex-shrink:0">break-even</div>
+            <div class="chart-bar-wrap" style="flex:1">
+              <div class="chart-bar" style="width:${beW}%;background:var(--warn)">
+                <span class="chart-bar-val">${r.beNF>0?R(r.beNF):''}</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-row" style="margin-bottom:3px;gap:5px">
+            <div style="width:52px;font-size:9px;color:var(--fg3);text-align:right;flex-shrink:0">NF atual</div>
+            <div class="chart-bar-wrap" style="flex:1">
+              <div class="chart-bar" style="width:${nfW}%;background:var(--pj)">
+                <span class="chart-bar-val">${r.nf>0?R(r.nf):''}</span>
+              </div>
+              ${r.nf>0 ? `<span style="font-size:9px;margin-left:4px;color:${nfOk?'var(--clt)':'var(--warn)'};position:absolute;right:-4px;top:3px">${nfOk?'✓':'✗'}</span>` : ''}
+            </div>
+          </div>
+          <div class="chart-row" style="margin-bottom:0;gap:5px">
+            <div style="width:52px;font-size:9px;color:var(--fg3);text-align:right;flex-shrink:0">CLT total</div>
+            <div class="chart-bar-wrap" style="flex:1">
+              <div class="chart-bar" style="width:${cltW}%;background:var(--clt)">
+                <span class="chart-bar-val">${r.cltTot>0?R(r.cltTot):''}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);margin:8px 0 10px"></div>`;
+  }).join('');
 }
 
 function renderComp() {
@@ -1174,24 +1348,22 @@ function renderComp() {
   const fmtDiff = (a, b) => {
     const d = a - b;
     if (Math.abs(d) < 1) return '<span class="dim">igual</span>';
-    return d > 0
-      ? `<span class="grn">+${R(d)}</span>`
-      : `<span class="red">${R(d)}</span>`;
+    return d > 0 ? `<span class="grn">+${R(d)}</span>` : `<span class="red">${R(d)}</span>`;
   };
 
   const rows = [
-    ['Bruto CLT',      R(rA.bruto),   R(rB.bruto)],
-    ['Nota fiscal PJ', R(rA.nf),      R(rB.nf)],
-    ['Regime PJ',      rA.regime,     rB.regime],
-    ['Líquido CLT',    R(rA.cltTot),  R(rB.cltTot)],
-    ['Líquido PJ',     R(rA.pjLiq),   R(rB.pjLiq)],
-    ['Break-even NF',  R(rA.beNF),    R(rB.beNF)],
+    ['Bruto CLT',      R(rA.bruto),  R(rB.bruto)],
+    ['Nota fiscal PJ', R(rA.nf),     R(rB.nf)],
+    ['Regime PJ',      rA.regime,    rB.regime],
+    ['Líquido CLT',    R(rA.cltTot), R(rB.cltTot)],
+    ['Líquido PJ',     R(rA.pjLiq),  R(rB.pjLiq)],
+    ['Break-even NF',  R(rA.beNF),   R(rB.beNF)],
     ['PJ vs CLT',
       rA.pjLiq >= rA.cltTot ? `<span class="grn">PJ +${R(rA.pjLiq-rA.cltTot)}</span>` : `<span class="red">CLT +${R(rA.cltTot-rA.pjLiq)}</span>`,
       rB.pjLiq >= rB.cltTot ? `<span class="grn">PJ +${R(rB.pjLiq-rB.cltTot)}</span>` : `<span class="red">CLT +${R(rB.cltTot-rB.pjLiq)}</span>`
     ],
-    ['Diferença líquido PJ', '', fmtDiff(rB.pjLiq, rA.pjLiq)],
-    ['Diferença líquido CLT','', fmtDiff(rB.cltTot, rA.cltTot)],
+    ['Dif. líquido PJ',  '', fmtDiff(rB.pjLiq,  rA.pjLiq)],
+    ['Dif. líquido CLT', '', fmtDiff(rB.cltTot, rA.cltTot)],
   ];
 
   document.getElementById('comp-result').innerHTML = `
@@ -1215,7 +1387,6 @@ let cfgActiveTab = 'gemini';
 function getKey(pid) { try { return localStorage.getItem(IA_PROVIDERS[pid].ls)||''; } catch(e){ return ''; } }
 function hasKey()    { return Object.keys(IA_PROVIDERS).some(p => !!getKey(p)); }
 function activeProvider() { return Object.keys(IA_PROVIDERS).find(p => !!getKey(p)) || null; }
-
 function updateIAState() {
   const ok = hasKey();
   document.getElementById('ia-no-key').style.display = ok ? 'none' : '';
